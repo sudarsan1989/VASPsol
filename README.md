@@ -1,5 +1,15 @@
 [![vaspsol](docs/logo.jpeg)](http://vaspsol.mse.ufl.edu/)
 
+
+This version is going to be modified
+======================================
+
+The original readme is given below - Sudarsan Surendralal
+
+
+Original Readme
+================
+
 We have implemented an implicit solvation model that describes the effect of 
 electrostatics, cavitation, and dispersion on the interaction between a solute 
 and solvent into the plane-wave DFT code VASP. Our implementation provides a 
