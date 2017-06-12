@@ -1,12 +1,6 @@
 [![vaspsol](docs/logo.jpeg)](http://vaspsol.mse.ufl.edu/)
 
 
-This version is going to be modified
-======================================
-
-The original readme is given below - Sudarsan Surendralal
-
-
 Original Readme
 ================
 
