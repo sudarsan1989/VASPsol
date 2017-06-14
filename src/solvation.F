@@ -104,6 +104,8 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
    Sol_phi = 0._q
  ENDIF
 
+PRINT *, "Subroutine Vcorrection_lpcm called"
+
 !---------------------------------------------------------------
 !set values to the parameters
 !---------------------------------------------------------------
@@ -286,6 +288,8 @@ END SUBROUTINE Vcorrection_lpcm
 !!====================================================================
 SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
      & CE_PS_TOTN,CE_d_eps,CE_kappa2,Vcav,Acav)  
+
+PRINT *, "Subroutine createcavity called"
 
  IMPLICIT NONE
 
@@ -519,6 +523,9 @@ END SUBROUTINE CREATECAVITY
 !!====================================================================
 SUBROUTINE MINIMIZE(MN_GRIDC, MN_LATT_CUR, MN_P, MN_T_INFO, MN_d_eps,&
      & MN_kappa2, MN_TOTN, MN_phi, NCGSOL)
+
+PRINT *, "Subroutine minimize called"
+
 
  IMPLICIT NONE
 
@@ -759,6 +766,9 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
      & LPS_d_eps, LPS_kappa2, gradphi_x_in, gradphi_y_in, &
      & gradphi_z_in, phi_work, LPS_Lp)
 
+
+ PRINT *, "Subroutine Leps called"
+
  IMPLICIT NONE
 
  TYPE (grid_3d) LPS_GRIDC
@@ -926,6 +936,8 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
      & EPP_PS_TOTN, EPP_phi, EPP_deps, EPP_kappa2, EPP_CWORK)
 
+
+PRINT *, "Subroutine EPS_POT called"
  IMPLICIT NONE
 
  TYPE (grid_3d),INTENT(IN)   :: EPP_GRIDC
@@ -1040,6 +1052,8 @@ END SUBROUTINE EPS_POT
 SUBROUTINE SHAPE_GRADN(EPR_GRIDC, EPR_T_INFO, EPR_P, EPR_LATT_CUR, &
      & EPR_PS_TOTN, eprime)
 
+PRINT *, "Subroutine Shape_gradn called"
+
  IMPLICIT NONE
 
  !dummy variables
@@ -1075,6 +1089,8 @@ END SUBROUTINE SHAPE_GRADN
 !!
 !!====================================================================
 SUBROUTINE NABLAN(D_PHI, D_GRIDC, D_LATT_CUR, D_PHI2, D_grad)
+
+PRINT *, "Subroutine NABLAN_lpcm called"
 
  IMPLICIT NONE
 
@@ -1195,6 +1211,8 @@ END SUBROUTINE NABLAN
 !!====================================================================
 SUBROUTINE LAPLN(D_PHI,D_GRIDC,D_LATT_CUR,D_PHI2)
 
+PRINT *, "Subroutine LAPLN called"
+
  IMPLICIT NONE
 
  !dummy variables
@@ -1306,6 +1324,8 @@ END SUBROUTINE LAPLN
 !!===============================================================
 SUBROUTINE SimplePoisson(GC_GRIDC,GC_LATT_CUR,GC_IN,GC_OUT,GFLAG)
 
+PRINT *, "Subroutine SimplePoisson called"
+
  IMPLICIT NONE
 
  TYPE (grid_3d),INTENT(IN) :: GC_GRIDC
@@ -1369,6 +1389,7 @@ END SUBROUTINE SimplePoisson
 !!==================================================================
 SUBROUTINE MY_D_PROD(D_P_val,ARRAY1,ARRAY2,GRIDC)
 
+PRINT *, "Subroutine MY_D_PROD called"
  IMPLICIT NONE
 
  TYPE(grid_3d),INTENT(IN) :: GRIDC
@@ -1404,6 +1425,7 @@ END SUBROUTINE MY_D_PROD
 !!===================================================================
 SUBROUTINE PACK_R2C(RA,CB,GRIDC)
 
+PRINT *, "Subroutine PACK_R2C called"
  IMPLICIT NONE
 
  TYPE(grid_3d),INTENT(IN) :: GRIDC
@@ -1437,6 +1459,7 @@ END SUBROUTINE PACK_R2C
 !!===================================================================
 SUBROUTINE UNPACK_C2R(A,SCALE1,B,SCALE2,C,GRID)
 
+PRINT *, "Subroutine UNPACK_C2R called"
  IMPLICIT NONE
 
  TYPE (grid_3d) :: GRID
@@ -1471,6 +1494,8 @@ END SUBROUTINE UNPACK_C2R
 !!
 !!====================================================================
 SUBROUTINE WRITE_TO_FILE(GRIDC, LATT_CUR, T_INFO, FNAME, CVTOT)
+
+PRINT *, "Subroutine WRITE_TO_FILE called"
 
  USE prec
  USE mgrid
@@ -1576,6 +1601,8 @@ END SUBROUTINE WRITE_TO_FILE
 !!====================================================================
 SUBROUTINE GET_VAC_LEVEL(GRIDC, CHTOT, CVTOT, VACPOT)
 
+
+PRINT *, "Subroutine GET_VAC_LEVEL called"
  USE prec
  USE mgrid
  USE poscar
@@ -1649,6 +1676,8 @@ END SUBROUTINE GET_VAC_LEVEL
 !!====================================================================
 SUBROUTINE COMPUTE_RHOB(GRIDC, LATT_CUR, T_INFO, EPSILON, PHI, RHOB)
 
+PRINT *, "Subroutine COMPUTE_RHOB called"
+
   IMPLICIT NONE
 
   TYPE(grid_3d),INTENT(IN) :: GRIDC
@@ -1704,6 +1733,7 @@ END SUBROUTINE COMPUTE_RHOB
 !!====================================================================
 SUBROUTINE COMPUTE_RHOION(GRIDC, LATT_CUR, T_INFO, KAPPA2, PHI,RHOION)
 
+PRINT *, "Subroutine COMPUTE_RHION called"
   IMPLICIT NONE
 
   TYPE(grid_3d),INTENT(IN) :: GRIDC
@@ -1802,6 +1832,8 @@ MODULE POT_K
  SUBROUTINE SOL_INIT(IO, EDIFF, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k_1, nc_k_1, eb_k_1, tau_1, lambda_d_k_1, kappa2b_k_1, &
       & EDIFFSOL_1, LRHOB_1, LRHOION_1)
+
+PRINT *, "Subroutine SOL_INIT called"
 
    USE poscar, ONLY : type_info 
    USE lattice, ONLY : latt, DIRKAR 
@@ -2062,6 +2094,8 @@ MODULE POT_K
  SUBROUTINE Vcorrection(SP_GRIDC, SP_P, SP_LATT_CUR, SP_T_INFO, WDES,&
                       & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL)
 
+PRINT *, "Subroutine Vcorrection called"
+
   USE constant 
   USE poscar, ONLY : type_info 
   USE lattice, ONLY : latt, DIRKAR 
@@ -2274,6 +2308,8 @@ MODULE POT_K
 SUBROUTINE IONIC_CHARGE (SP_GRIDC,SP_LATT_CUR,SP_P,SP_T_INFO,SP_N, &
      & flag,Vcorr,Vdiel)
 
+PRINT *, "Subroutine ionic_charge called"
+
  USE constant
  USE mgrid, ONLY : grid_3d
  USE lattice, ONLY : latt,DIRKAR
@@ -2392,6 +2428,8 @@ SUBROUTINE Fcorrection(GRIDC,P,T_INFO,LATT_CUR,Vcorr,Vdiel, EIFOR_SOL)
   USE lattice, ONLY : latt, DIRKAR 
   USE mgrid, ONLY : grid_3d
   USE pseudo, ONLY : potcar
+
+PRINT *, "Subroutine Fcorrection called"
 
   IMPLICIT NONE
 
@@ -2553,6 +2591,8 @@ SUBROUTINE GETRCORE(NTYP,RCS)
  USE constant 
  USE mpimy
 
+PRINT *, "Subroutine GETRCORE called"
+
  implicit none
 
  INTEGER IERR, I, ist,L
@@ -2609,6 +2649,9 @@ END SUBROUTINE GETRCORE
 !!=====================================================================
 SUBROUTINE JDFTX_INTERFACE(SP_GRIDC, SP_LATT_CUR, TOTN, PS_TOTN, &
      & Vdiel, Vcorr, Atot)
+
+
+PRINT *, "Subroutine JDFTX_INTERFACE called"
 
  USE lattice, ONLY : latt
  USE mgrid, ONLY : grid_3d
@@ -2708,6 +2751,8 @@ END SUBROUTINE JDFTX_INTERFACE
 !!=====================================================================
 SUBROUTINE GET_FERMISHIFT(LATT_CUR, T_INFO, GRIDC, WDES, CVPSP, CHTOT)
 
+
+PRINT *, "Subroutine GET_FERMISHIFT called"
   USE poscar, ONLY : type_info 
   USE lattice, ONLY : latt, DIRKAR 
   USE mgrid, ONLY : grid_3d
@@ -2868,6 +2913,9 @@ CONTAINS
 !      
 !**********************************************************************
   SUBROUTINE SOL_READER(NIONS,EDIFF,IO)
+
+
+  PRINT *, "Subroutine SOL_READER called"
 
     USE base
     USE vaspxml
@@ -3142,6 +3190,9 @@ CONTAINS
 !***********************************************************************
   SUBROUTINE SOL_WRITER(IO)
 
+
+  PRINT *, "Subroutine SOL_WRITER called"
+
     USE base
 
     IMPLICIT NONE
@@ -3183,6 +3234,8 @@ CONTAINS
 !
 !***********************************************************************
   SUBROUTINE XML_WRITE_SOL
+
+  PRINT *, "Subroutine XML_WRITE_SOL called"
 
     USE vaspxml
 
@@ -3226,6 +3279,7 @@ CONTAINS
   SUBROUTINE SOL_VCORRECTION(INFO, T_INFO, LATT_CUR, P, WDES, GRIDC, &
        & CHTOT, CVTOT)
 
+    PRINT *, "Subroutine SOL_VCORRECTION called"
     USE base
     USE poscar
     USE lattice
