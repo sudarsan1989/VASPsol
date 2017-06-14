@@ -2988,7 +2988,7 @@ CONTAINS
        !SOLNZMIN
        !---------------------------------------------------------------
 
-       CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','I',RDUM,SOLNZMIN,CDUM,LDUM,CHARAC,N,1,IERR)
+       CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','F',IDUM,SOLNZMIN,CDUM,LDUM,CHARAC,N,1,IERR)
 
 
        !-------------------------------------------------------------------------------------------------------
