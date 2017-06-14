@@ -2831,6 +2831,13 @@ MODULE solvation
   LOGICAL, SAVE :: LRHOB=.FALSE.
   LOGICAL, SAVE :: LRHOION=.FALSE.
 
+
+!-----------------------------------------------------------------
+! NEW STUFF
+!-----------------------------------------------------------------
+  INTEGER, SAVE :: SOLNZMIN = 0
+
+
 !energy and force
   REAL(q), PUBLIC, SAVE :: Ediel_SOL = 0._q
   REAL(q), PUBLIC, ALLOCATABLE, SAVE :: EIFOR_SOL(:,:)
@@ -2968,13 +2975,35 @@ CONTAINS
          
        ENDIF
 #endif
-
        IF ((IERR/=0).AND.(IERR/=3)) THEN
           IF (IO%IU0>=0) WRITE(IO%IU0,*)'Error reading ''EB_K''from INCAR.'
           IF (IO%IU0>=0) WRITE(IO%IU0,*) ' Error code = ', IERR
           STOP
        ENDIF
+
        CALL XML_INCAR('EB_K','F',IDUM,eb_k,CDUM,LDUM,CHARAC,N)
+
+
+       !---------------------------------------------------------------
+       !SOLNZMIN
+       !---------------------------------------------------------------
+
+       CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','I',RDUM,SOLNZMIN,CDUM,LDUM,CHARAC,N,1,IERR)
+
+
+       !-------------------------------------------------------------------------------------------------------
+       ! CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','F',IDUM,SOLNZMIN,CDUM,LDUM,CHARAC,N,1,IERR)
+       !
+       !
+       ! CALL RDATAB(LOPEN,'INCAR',IO%IU5,'NC_K','=','#',';','F',IDUM,nc_k,CDUM,LDUM,CHARAC,N,1,IERR)
+       !    CALL RDATAB(LOPEN,'INCAR',IO%IU5,'LSOL','=','#',';','L', &
+       !  &            IDUM,RDUM,CDUM,LSOL,CHARAC,N,1,IERR)
+       !-------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
        !---------------------------------------------------------------
        !tau
@@ -3124,7 +3153,7 @@ CONTAINS
 
     IF (IO%IU6>=0) THEN
        WRITE(IO%IU6,100) LSOL, eb_k, sigma_k, nc_k, tau, &
-            & lambda_d_k, LRHOB, LRHOION
+            & lambda_d_k, LRHOB, LRHOION, SOLNZMIN
     ENDIF
 
 100 FORMAT( &
@@ -3136,7 +3165,8 @@ CONTAINS
              '   TAU     =',F10.6,  '     cavity surface tension' /&
              '   LAMBDA_D_K    =',F10.6,  '     Debye length in Angstroms' /&
              '   LRHOB     =',L6,  '     write boundcharge  density' /&
-             '   LRHOION     =',L6,  '     write ioniccharge density' /)
+             '   LRHOION     =',L6,  '     write ioniccharge density' /&
+             '   SOLNZMIN    =', I7,  '      writing minimum z-grid limit')
 
 
     RETURN
