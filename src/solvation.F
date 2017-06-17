@@ -1783,7 +1783,7 @@ MODULE POT_K
 
  PRIVATE :: IONIC_CHARGE, GETRCORE, Fcorrection, JDFTX_INTERFACE
 
- INTEGER, PRIVATE, SAVE :: PK_counter = 1
+ INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
  ! numerical params
  REAL(q), PRIVATE, SAVE :: sigma_nc_k
  REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:)
