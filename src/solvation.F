@@ -322,10 +322,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  REAL(q)                :: R(3)
  !! test 7/8/14
 
- INTEGER(q) :: trial_int = 25
+ INTEGER(q) :: trial_int = 25, min_limit, max_limit, temp
  REAL(q) :: trial_real = 0.88_q
-
-
 
 
  NPC =  CE_GRIDC%MPLWV
@@ -415,25 +413,40 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  ! CE_kappa2 = kappa2  = kappa2b_k * shape function
  ! kappa2b_k: inverse of the square of debye length in angstroms
  !-------------------------------------------------------------
+
+! Taking into account that the x-index is the fastest and z-index the slowest in VASP
+
+ min_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(1)) * CE_GRIDC%NGX * CE_GRIDC%NGY
+ max_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(2)) * CE_GRIDC%NGX * CE_GRIDC%NGY
+
+ IF (max_limit > min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
+
+
  DO I=1, CE_GRIDC%RL%NP
 
    CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
 
-   IF (I == SOLNZMIN) THEN
-        print * , 'SOLNZMIN ', SOLNZMIN
-        print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
-      & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
-        print *, 'product', INT(REAL(trial_int, q) * trial_real)
-   ENDIF
+   !--------------------------------------------------------------------------------------------
+   !
+   !IF (I == SOLNZMIN) THEN
+   !     print * , 'SOLNZMIN ', SOLNZMIN
+   !     print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
+   !   & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
+   !   !        print *, 'product', INT(REAL(trial_int, q) * trial_real)
+   ! ENDIF
 
-   !if (I > SOLNZMIN) THEN
+   IF (I < min_limit) THEN
+        CE_d_eps(I) = 1._q
+   ELSEIF (I > max_limit) THEN
+        CE_d_eps(I) = 1._q
+   ELSE
+        CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
 
-   !     CE_d_eps(I) = 1._q
-
-
-   CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
    CE_kappa2(I) = kappa2b_k * CE_S(I)
-
  END DO
 
 #ifdef debugsol
