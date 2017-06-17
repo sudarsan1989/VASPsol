@@ -322,6 +322,12 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  REAL(q)                :: R(3)
  !! test 7/8/14
 
+ INTEGER(q) :: trial_int = 25
+ REAL(q) :: trial_real = 0.88_q
+
+
+
+
  NPC =  CE_GRIDC%MPLWV
  RLNP = CE_GRIDC%RL%NP
  RCNP = CE_GRIDC%RC%NP
@@ -417,9 +423,6 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
         print * , 'SOLNZMIN ', SOLNZMIN
         print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
       & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
-
-        INTEGER :: trial_int = 25
-        REAL(q) :: trial_real = 0.88_q
         print *, 'product', INT(REAL(trial_int, q) * trial_real)
    ENDIF
 
