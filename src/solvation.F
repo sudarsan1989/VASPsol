@@ -411,6 +411,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
    IF (I == SOLNZMIN) THEN
         print * , 'SOLNZMIN ', SOLNZMIN
+        print *, 'NPLWV, MPLWV, RL%NP, RC%NP',&
+      & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP
    ENDIF
 
  !------------------------------------
