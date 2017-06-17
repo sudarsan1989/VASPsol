@@ -415,11 +415,12 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
       & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
    ENDIF
 
- !------------------------------------
- !Insert if statement here
- !------------------------------------
-   CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
+   !if (I > SOLNZMIN) THEN
 
+   !     CE_d_eps(I) = 1._q
+
+
+   CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
    CE_kappa2(I) = kappa2b_k * CE_S(I)
 
  END DO
@@ -2847,6 +2848,13 @@ MODULE solvation
 !-----------------------------------------------------------------
   INTEGER, SAVE :: SOLNZMIN = 0
 
+! limits of applying the continuum along the z-direction in direct
+! coordinates. Default is from 0 to 1 (meaning the entire width of the system)
+
+  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
+
+  ZLIMS(1) = 0._q
+  ZLIMS(2) = 1._q
 
 !energy and force
   REAL(q), PUBLIC, SAVE :: Ediel_SOL = 0._q
@@ -2867,6 +2875,8 @@ MODULE solvation
 !local variables
   TYPE (in_struct), PRIVATE, SAVE :: IO_1
   REAL(q), PRIVATE, SAVE :: EDIFF_1
+
+!
 
 CONTAINS
 
@@ -2993,27 +3003,19 @@ CONTAINS
 
        CALL XML_INCAR('EB_K','F',IDUM,eb_k,CDUM,LDUM,CHARAC,N)
 
+       !---------------------------------------------------------------
+       !ZLIMS
+       !---------------------------------------------------------------
+
+       CALL RDATAB(LOPEN,'INCAR',IO%IU5,'ZLIMS','=','#',';','F',IDUM,ZLIMS,CDUM,LDUM,CHARAC,N,2,IERR)
+
+
 
        !---------------------------------------------------------------
        !SOLNZMIN
        !---------------------------------------------------------------
 
        CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','I',SOLNZMIN, RDUM, CDUM,LDUM,CHARAC,N,1,IERR)
-
-
-       !-------------------------------------------------------------------------------------------------------
-       ! CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','F',IDUM,SOLNZMIN,CDUM,LDUM,CHARAC,N,1,IERR)
-       !
-       !
-       ! CALL RDATAB(LOPEN,'INCAR',IO%IU5,'NC_K','=','#',';','F',IDUM,nc_k,CDUM,LDUM,CHARAC,N,1,IERR)
-       !    CALL RDATAB(LOPEN,'INCAR',IO%IU5,'LSOL','=','#',';','L', &
-       !  &            IDUM,RDUM,CDUM,LSOL,CHARAC,N,1,IERR)
-       !-------------------------------------------------------------------------------------------------------
-
-
-
-
-
 
        !---------------------------------------------------------------
        !tau
