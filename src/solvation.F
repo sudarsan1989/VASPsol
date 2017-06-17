@@ -58,7 +58,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1 )
+     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, solnzmin_1 )
 
  IMPLICIT NONE
 
@@ -76,7 +76,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  COMPLEX(q),INTENT(IN) :: TOTN(SP_GRIDC%MPLWV),PS_TOTN(SP_GRIDC%MPLWV) 
  RGRID,ALLOCATABLE :: SP_d_eps(:), SP_kappa2(:)
  RGRID,ALLOCATABLE :: RWORK(:)
- INTEGER :: I,J, NCGSOL
+ INTEGER :: I,J, NCGSOL, solnzmin_1
  REAL(q)  :: Atot, Ael, Acav, Ecorr1, Ecorr2, Ecorr_cav
  REAL(q) :: sigma_nc_k1,sigma_k1,nc_k1,eb_k1,kappa2b_k1
  REAL(q) :: tau1,ediffs
@@ -118,6 +118,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  EDIFFSOL = ediffs
  LRHOB =  LRHOB1
  LRHOION = LRHOION1
+ SOLNZMIN = solnzmin_1
 
 !---------------------------------------------------------------
 ! initialize
@@ -322,7 +323,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  RCNP = CE_GRIDC%RC%NP
  NPR =  DIMREAL(CE_GRIDC%MPLWV) !NPR = NPC, in complex mode
 
-#ifdef debugsol
+!#ifdef debugsol
  IF (SP_IO%IU0>=0) print *, 'NPLWV, MPLWV, RL%NP, RC%NP',&
       & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP
 #endif
@@ -408,6 +409,12 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
    CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
 
+   IF (I == SOLNZMIN) THEN
+        print * , 'SOLNZMIN ', SOLNZMIN
+
+ !------------------------------------
+ !Insert if statement here
+ !------------------------------------
    CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
 
    CE_kappa2(I) = kappa2b_k * CE_S(I)
@@ -1801,7 +1808,7 @@ MODULE POT_K
 !!======================================================================
  SUBROUTINE SOL_INIT(IO, EDIFF, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k_1, nc_k_1, eb_k_1, tau_1, lambda_d_k_1, kappa2b_k_1, &
-      & EDIFFSOL_1, LRHOB_1, LRHOION_1)
+      & EDIFFSOL_1, LRHOB_1, LRHOION_1, solnzmin_1)
 
    USE poscar, ONLY : type_info 
    USE lattice, ONLY : latt, DIRKAR 
@@ -2160,7 +2167,7 @@ MODULE POT_K
       CALL Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, SP_T_INFO,&
            & SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, sigma_nc_k,&
            & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k,&
-           & tau, EDIFFSOL, LRHOB, LRHOION)
+           & tau, EDIFFSOL, LRHOB, LRHOION, SOLNZMIN)
 
 #ifdef debugsol
       sol_io 'Return from vcorr_lpcm minimization'
@@ -3258,7 +3265,7 @@ CONTAINS
     
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
-      & EDIFFSOL, LRHOB, LRHOION)
+      & EDIFFSOL, LRHOB, LRHOION, SOLNZMIN)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
          & CHTOT, Vcorr, Ecorr, EIFOR_SOL) 
