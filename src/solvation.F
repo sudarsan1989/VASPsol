@@ -1829,7 +1829,7 @@ MODULE POT_K
    REAL(q) :: sigma_gauss, RCS(T_INFO%NTYP)
    REAL(q) :: sigma_k_1, nc_k_1, eb_k_1, tau_1
    REAL(q) :: lambda_d_k_1, kappa2b_k_1
-   INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM
+   INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM, solnzmin_1
    REAL(q) :: RDUM,delta_grd,sigma_rc_k0(T_INFO%NTYP)
    COMPLEX(q) CDUM
    LOGICAL :: LRHOB_1, LRHOION_1
