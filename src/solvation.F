@@ -3165,7 +3165,7 @@ CONTAINS
 
     IF (IO%IU6>=0) THEN
        WRITE(IO%IU6,100) LSOL, eb_k, sigma_k, nc_k, tau, &
-            & lambda_d_k, LRHOB, LRHOION, SOLNZMIN
+            & lambda_d_k, LRHOB, LRHOION, SOLNZMIN, ZLIMS
     ENDIF
 
 100 FORMAT( &
@@ -3178,7 +3178,8 @@ CONTAINS
              '   LAMBDA_D_K    =',F10.6,  '     Debye length in Angstroms' /&
              '   LRHOB     =',L6,  '     write boundcharge  density' /&
              '   LRHOION     =',L6,  '     write ioniccharge density' /&
-             '   SOLNZMIN    =', I7,  '      writing minimum z-grid limit')
+             '   SOLNZMIN    =', I7,  '      writing minimum z-grid limit' /&
+             '   ZLIMS    =', 2F14.6,  '      writing limits of the continuum')
 
 
     RETURN
