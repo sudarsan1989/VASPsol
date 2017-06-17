@@ -34,7 +34,8 @@ MODULE POT_LPCM_K
  PRIVATE :: SHAPE_GRADN, NABLAN, LAPLN
  PRIVATE :: COMPUTE_RHOB, COMPUTE_RHOION
 
- INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
+ INTEGER, PRIVATE, SAVE :: PK_counter = 1,
+ REAL(q), PRIVATE, SAVE :: ZLIMS(2)
  REAL(q), PRIVATE, SAVE :: CHGMIN = 1E-10_q
  COMPLEX(q), PRIVATE, ALLOCATABLE, SAVE :: Sol_phi(:)
  REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:)
@@ -58,7 +59,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, solnzmin_1 )
+     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, solnzmin_1, zlims_1)
 
  IMPLICIT NONE
 
@@ -77,6 +78,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  RGRID,ALLOCATABLE :: SP_d_eps(:), SP_kappa2(:)
  RGRID,ALLOCATABLE :: RWORK(:)
  INTEGER :: I,J, NCGSOL, solnzmin_1
+ REAL(q) :: zlims_1(2)
  REAL(q)  :: Atot, Ael, Acav, Ecorr1, Ecorr2, Ecorr_cav
  REAL(q) :: sigma_nc_k1,sigma_k1,nc_k1,eb_k1,kappa2b_k1
  REAL(q) :: tau1,ediffs
@@ -119,6 +121,8 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  LRHOB =  LRHOB1
  LRHOION = LRHOION1
  SOLNZMIN = solnzmin_1
+ ZLIMS(1) = zlims_1(1)_
+ ZLIMS(2) = zlims_1(2)
 
 !---------------------------------------------------------------
 ! initialize
@@ -413,6 +417,10 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
         print * , 'SOLNZMIN ', SOLNZMIN
         print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
       & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
+
+        INT :: trial_int = 25
+        REAL(q) :: trial_real = 0.88_q
+        print *, 'product', INT(REAL(trial_int, q) * trial_real)
    ENDIF
 
    !if (I > SOLNZMIN) THEN
@@ -1787,6 +1795,8 @@ MODULE POT_K
  PRIVATE :: IONIC_CHARGE, GETRCORE, Fcorrection, JDFTX_INTERFACE
 
  INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
+ REAL(q), PRIVATE, SAVE :: ZLIMS(2)
+
  ! numerical params
  REAL(q), PRIVATE, SAVE :: sigma_nc_k
  REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:)
@@ -1833,6 +1843,7 @@ MODULE POT_K
    REAL(q) :: sigma_k_1, nc_k_1, eb_k_1, tau_1
    REAL(q) :: lambda_d_k_1, kappa2b_k_1
    INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM, solnzmin_1
+   REAL(q) :: zlims_1(2)
    REAL(q) :: RDUM,delta_grd,sigma_rc_k0(T_INFO%NTYP)
    COMPLEX(q) CDUM
    LOGICAL :: LRHOB_1, LRHOION_1
@@ -1855,6 +1866,8 @@ MODULE POT_K
    LRHOION = LRHOION_1
    EDIFFSOL = EDIFFSOL_1
    SOLNZMIN = solnzmin_1
+   ZLIMS(1) = zlims_1(1)
+   ZLIMS(2) = zlims_1(2)
 #ifdef MPI
    IF (GRIDC%COMM%NODE_ME==GRIDC%COMM%IONODE) THEN
 #endif
@@ -2171,7 +2184,7 @@ MODULE POT_K
       CALL Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, SP_T_INFO,&
            & SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, sigma_nc_k,&
            & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k,&
-           & tau, EDIFFSOL, LRHOB, LRHOION, SOLNZMIN)
+           & tau, EDIFFSOL, LRHOB, LRHOION, SOLNZMIN, ZLIMS)
 
 #ifdef debugsol
       sol_io 'Return from vcorr_lpcm minimization'
@@ -2851,7 +2864,7 @@ MODULE solvation
 ! limits of applying the continuum along the z-direction in direct
 ! coordinates. Default is from 0 to 1 (meaning the entire width of the system)
 
-  REAL(q), PRIVATE, SAVE :: ZLIMS = (/0., 1./)
+  REAL(q), PRIVATE, SAVE :: ZLIMS(2) = (/0., 1./)
 
 !energy and force
   REAL(q), PUBLIC, SAVE :: Ediel_SOL = 0._q
@@ -3268,7 +3281,7 @@ CONTAINS
     
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
-      & EDIFFSOL, LRHOB, LRHOION, SOLNZMIN)
+      & EDIFFSOL, LRHOB, LRHOION, SOLNZMIN, ZLIMS)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
          & CHTOT, Vcorr, Ecorr, EIFOR_SOL) 
