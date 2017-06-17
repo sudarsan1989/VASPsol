@@ -2851,10 +2851,7 @@ MODULE solvation
 ! limits of applying the continuum along the z-direction in direct
 ! coordinates. Default is from 0 to 1 (meaning the entire width of the system)
 
-  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
-
-  ZLIMS(1) = 0._q
-  ZLIMS(2) = 1._q
+  REAL(q), PRIVATE, SAVE :: ZLIMS = (/0., 1./)
 
 !energy and force
   REAL(q), PUBLIC, SAVE :: Ediel_SOL = 0._q
