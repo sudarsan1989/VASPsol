@@ -1825,7 +1825,7 @@ MODULE POT_K
 !!======================================================================
  SUBROUTINE SOL_INIT(IO, EDIFF, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k_1, nc_k_1, eb_k_1, tau_1, lambda_d_k_1, kappa2b_k_1, &
-      & EDIFFSOL_1, LRHOB_1, LRHOION_1, solnzmin_1)
+      & EDIFFSOL_1, LRHOB_1, LRHOION_1, solnzmin_1, zlims_1)
 
    USE poscar, ONLY : type_info 
    USE lattice, ONLY : latt, DIRKAR 
