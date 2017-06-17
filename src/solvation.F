@@ -34,7 +34,7 @@ MODULE POT_LPCM_K
  PRIVATE :: SHAPE_GRADN, NABLAN, LAPLN
  PRIVATE :: COMPUTE_RHOB, COMPUTE_RHOION
 
- INTEGER, PRIVATE, SAVE :: PK_counter = 1,
+ INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
  REAL(q), PRIVATE, SAVE :: CHGMIN = 1E-10_q
  COMPLEX(q), PRIVATE, ALLOCATABLE, SAVE :: Sol_phi(:)
@@ -121,7 +121,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  LRHOB =  LRHOB1
  LRHOION = LRHOION1
  SOLNZMIN = solnzmin_1
- ZLIMS(1) = zlims_1(1)_
+ ZLIMS(1) = zlims_1(1)
  ZLIMS(2) = zlims_1(2)
 
 !---------------------------------------------------------------
@@ -418,7 +418,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
         print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
       & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
 
-        INT :: trial_int = 25
+        INTEGER :: trial_int = 25
         REAL(q) :: trial_real = 0.88_q
         print *, 'product', INT(REAL(trial_int, q) * trial_real)
    ENDIF
