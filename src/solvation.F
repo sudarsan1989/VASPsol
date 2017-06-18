@@ -445,6 +445,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
         CE_d_eps(I) = 1._q
    ELSE
         CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
+   ENDIF
 
    CE_kappa2(I) = kappa2b_k * CE_S(I)
  END DO
