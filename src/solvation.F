@@ -425,6 +425,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     max_limit = temp
  ENDIF
 
+ print *, 'MIN_LIMIT, MAX_LIMIT', min_limit, max_limit
 
  DO I=1, CE_GRIDC%RL%NP
 
@@ -438,6 +439,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
    !   & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
    !   !        print *, 'product', INT(REAL(trial_int, q) * trial_real)
    ! ENDIF
+
+
 
    IF (I < min_limit) THEN
         CE_d_eps(I) = 1._q
