@@ -431,9 +431,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
    CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
 
-   IF (I < min_limit) THEN
-        CE_d_eps(I) = 1._q
-   ELSEIF (I > max_limit) THEN
+   IF ((I < min_limit) .OR. (I > max_limit))  THEN
         CE_d_eps(I) = 1._q
    ELSE
         CE_d_eps(I) = 1._q + (eb_k - 1._q) * CE_S(I)
@@ -971,7 +969,7 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  REAL(q),ALLOCATABLE    :: phisq(:), RWORK(:)
  RGRID, ALLOCATABLE     :: RWORK_1(:)
  REAL(q)                :: EPP_CWORK_temp
- INTEGER(q)             :: I,J,K  
+ INTEGER(q)             :: I,J,K, min_limit, max_limit
 
  ALLOCATE(eprime(EPP_GRIDC%RL%NP), kprime(EPP_GRIDC%RL%NP) )
  ALLOCATE(phisq(DIMREAL(EPP_GRIDC%MPLWV)))
@@ -1025,9 +1023,27 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !---------------------------------------------------------------------
  RWORK = 0._q
 
+ min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+ max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+
+ IF (max_limit < min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
+
+
  DO I = 1, EPP_GRIDC%RL%NP
-    EPP_CWORK_temp = eprime(I) * phisq(I) + &
-         & eb_k * kprime(I) * RWORK_1(I) * RWORK_1(I)
+
+    IF ((I < min_limit) .OR. (I > max_limit))  THEN
+
+        EPP_CWORK_temp = eprime(I) * phisq(I) + &
+             & 1._q * kprime(I) * RWORK_1(I) * RWORK_1(I)
+
+    ELSE
+        EPP_CWORK_temp = eprime(I) * phisq(I) + &
+             & eb_k * kprime(I) * RWORK_1(I) * RWORK_1(I)
+    ENDIF
     RWORK(I) = EPP_CWORK_temp
  ENDDO
 
