@@ -431,17 +431,6 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
    CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
 
-   !--------------------------------------------------------------------------------------------
-   !
-   !IF (I == SOLNZMIN) THEN
-   !     print * , 'SOLNZMIN ', SOLNZMIN
-   !     print *, 'NPLWV, MPLWV, RL%NP, RC%NP NGZ',&
-   !   & CE_GRIDC%NPLWV, CE_GRIDC%MPLWV, CE_GRIDC%RL%NP, CE_GRIDC%RC%NP, CE_GRIDC%NGZ
-   !   !        print *, 'product', INT(REAL(trial_int, q) * trial_real)
-   ! ENDIF
-
-
-
    IF (I < min_limit) THEN
         CE_d_eps(I) = 1._q
    ELSEIF (I > max_limit) THEN
@@ -3324,16 +3313,17 @@ CONTAINS
        POS_SHEET_Z = MOD(DIP%POSCEN(3) + 0.5_q, 1._q)
        print *, 'POS_SHEET_Z', POS_SHEET_Z
 
-       IF ((POS_SHEET_Z > ZLIMS(2)) .OR. (POS_SHEET_Z < ZLIMS(1)) ) THEN
-
-         DIP%EPSILON = 1._q
-
-       ELSE
+       IF ((POS_SHEET_Z >= ZLIMS(1)) .AND. (POS_SHEET_Z <= ZLIMS(2)) ) THEN
 
          DIP%EPSILON = EB_K
 
+       ELSE
+
+        DIP%EPSILON = 1._q
+
        ENDIF
 
+       print *, "The dipole dielectric constant is now set to:", DIP%EPSILON
 
 
 #ifdef debugsol
