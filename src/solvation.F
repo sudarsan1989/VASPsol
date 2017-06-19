@@ -3290,7 +3290,7 @@ CONTAINS
     COMPLEX(q) CVTOT(GRIDC%MPLWV,WDES%NCDIJ)
     
 ! local variables
-    REAL(q) :: Ecorr, EDIFF
+    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
     INTEGER :: I
 
@@ -3321,7 +3321,20 @@ CONTAINS
        IF (IO_1%IU0>=0) WRITE(IO_1%IU0,*) 'Current value of DIP%EPSILON = ', DIP%EPSILON
 #endif
 
-       DIP%EPSILON = EB_K
+       POS_SHEET_Z = MOD(DIP%POSCEN(3) + 0.5_q, 1._q)
+       print *, 'POS_SHEET_Z', POS_SHEET_Z
+
+       IF ((POS_SHEET_Z > ZLIMS(2)) .OR. (POS_SHEET_Z < ZLIMS(1)) ) THEN
+
+         DIP%EPSILON = 1._q
+
+       ELSE
+
+         DIP%EPSILON = EB_K
+
+       ENDIF
+
+
 
 #ifdef debugsol
        IF (IO_1%IU0>=0) WRITE(IO_1%IU0,*) 'New value of DIP%EPSILON = ', DIP%EPSILON
