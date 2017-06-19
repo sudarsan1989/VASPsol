@@ -969,7 +969,7 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  REAL(q),ALLOCATABLE    :: phisq(:), RWORK(:)
  RGRID, ALLOCATABLE     :: RWORK_1(:)
  REAL(q)                :: EPP_CWORK_temp
- INTEGER(q)             :: I,J,K, min_limit, max_limit
+ INTEGER(q)             :: I,J,K, min_limit, max_limit, temp
 
  ALLOCATE(eprime(EPP_GRIDC%RL%NP), kprime(EPP_GRIDC%RL%NP) )
  ALLOCATE(phisq(DIMREAL(EPP_GRIDC%MPLWV)))
