@@ -806,8 +806,8 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp
 
 
- min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
- max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+ min_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(1)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
+ max_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(2)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
 
  IF (max_limit < min_limit) THEN
     temp = min_limit
