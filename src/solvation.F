@@ -1005,14 +1005,15 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
 
  eprime = eprime * (eb_k - 1._q)
 
- print *, 'Making changes to eprime'
-
  IF (min_limit > 0) THEN
+    print *, 'Setting eb_k to 1'
     DO I = 1, min_limit
          eprime(I) = 0._q
     END DO
  ENDIF
  IF (max_limit < EPP_GRIDC%RL%NP)  THEN
+    print *, 'Setting eb_k to 1'
+
     DO I = max_limit + 1, EPP_GRIDC%RL%NP
          eprime(I) = 0._q
     END DO
