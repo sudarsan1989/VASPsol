@@ -803,7 +803,17 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  COMPLEX(q),INTENT(INOUT) :: phi_work(LPS_GRIDC%MPLWV)
 
- INTEGER(q) :: N,I,J,k,N1,N2,N3,NC
+ INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp
+
+
+ min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+ max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+
+ IF (max_limit < min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
       
  N = LPS_GRIDC%NPLWV
 
@@ -868,14 +878,46 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
 #else
 
- DO j = 1,LPS_GRIDC%RL%NP
+ IF (min_limit > 0) THEN
+    DO j = 1, min_limit
+        gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
+        gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
+        gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
+        !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
+        phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
+    END DO
+    IF (max_limit < LPS_GRIDC%RL%NP) THEN
+        DO j = max_limit+1, LPS_GRIDC%RL%NP
+            gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
+            gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
+            gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
+            !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
+            phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
+        END DO
+    ENDIF
+ ENDIF
+ DO j = min_limit + 1, max_limit
     gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
     gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
     gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
     !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
     phi_work(j) = LPS_phi(j) * eb_k * LPS_kappa2(j)
+ END DO
 
- ENDDO
+
+
+ !---------------------------------------------------------------------------
+ !DO j = 1,LPS_GRIDC%RL%NP
+ !   gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
+ !   gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
+ !   gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
+ !   !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
+ !   phi_work(j) = LPS_phi(j) * eb_k * LPS_kappa2(j)
+ !
+ !ENDDO
+ ---------------------------------------------------------------------------
+
+
 #endif
  !---------------------------------------------------------------------
  !epsilon*grad phi in kspace
@@ -1065,7 +1107,8 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
              & eb_k * kprime(I) * RWORK_1(I) * RWORK_1(I)
     ENDIF
     RWORK(I) = EPP_CWORK_temp
- ENDDO
+ END DO
+
 
  !---------------------------------------------------------------------
  !phi to k space
