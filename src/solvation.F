@@ -976,6 +976,16 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  ALLOCATE(RWORK(DIMREAL(EPP_GRIDC%MPLWV)))
  ALLOCATE(RWORK_1(DIMREAL(EPP_GRIDC%MPLWV)))
 
+ min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+ max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+
+ IF (max_limit < min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
+
+
  !---------------------------------------------------------------------
  !SHAPE_GRADN returns eprime, the derivative of shape function wrt 
  !the charge density in real space
@@ -990,7 +1000,20 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !CALL WRITE_TO_FILE(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, 'EPRIME', eprime)
  !soltest
  kprime = eprime * kappa2b_k
+
  eprime = eprime * (eb_k - 1._q)
+
+ IF (min_limit > 0) THEN
+    DO I = 1, min_limit
+         eprime(I) = 0._q
+    END DO
+ ENDIF
+ IF (max_limit < EPP_GRIDC%RL%NP)  THEN
+    DO I = max_limit + 1, EPP_GRIDC%RL%NP
+         eprime(I) = 0._q
+    END DO
+ ENDIF
+
 
  !---------------------------------------------------------------------
  !EPP_phi,the solution to the generalized poisson equation,
@@ -1023,14 +1046,6 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !---------------------------------------------------------------------
  RWORK = 0._q
 
- min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
- max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
-
- IF (max_limit < min_limit) THEN
-    temp = min_limit
-    min_limit = max_limit
-    max_limit = temp
- ENDIF
 
 
  DO I = 1, EPP_GRIDC%RL%NP
