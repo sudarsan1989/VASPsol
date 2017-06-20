@@ -999,9 +999,13 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !soltest
  !CALL WRITE_TO_FILE(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, 'EPRIME', eprime)
  !soltest
+
+
  kprime = eprime * kappa2b_k
 
  eprime = eprime * (eb_k - 1._q)
+
+ print *, 'Making changes to eprime'
 
  IF (min_limit > 0) THEN
     DO I = 1, min_limit
