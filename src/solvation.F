@@ -885,7 +885,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
         END DO
  ENDIF
  IF (max_limit < LPS_GRIDC%MPLWV) THEN
-    DO j = max_limit +2, LPS_GRIDC%MPLWV, 2
+    DO j = max_limit + 1, LPS_GRIDC%MPLWV, 2
         gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
              & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
         gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
@@ -901,7 +901,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
     END DO
  ENDIF
 
- DO j = min_limit, max_limit, 2
+ DO j = min_limit + 1, max_limit, 2
     gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
          & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
     gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
