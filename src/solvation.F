@@ -801,7 +801,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  COMPLEX(q),INTENT(INOUT) :: phi_work(LPS_GRIDC%MPLWV)
 
- INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp,
+ INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp
  INTEGER(q) :: min_odd_limit, max_odd_limit
 
 
