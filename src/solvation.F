@@ -868,13 +868,13 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  ENDIF
 
 
- IF (MOD(min_limit, 2) > 0.5_q) THEN
+ IF (MOD(min_limit, 2_q) > 0.5_q) THEN
     min_odd_limit = min_limit + 2
  ELSE
     min_odd_limit = min_limit + 1
  ENDIF
 
- IF (MOD(max_limit, 2) > 0.5_q) THEN
+ IF (MOD(max_limit, 2_q) > 0.5_q) THEN
     max_odd_limit = max_limit + 2
  ELSE
     max_odd_limit = max_limit + 1
