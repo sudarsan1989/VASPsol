@@ -804,14 +804,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp
 
 
- min_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(1)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
- max_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(2)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
 
- IF (max_limit < min_limit) THEN
-    temp = min_limit
-    min_limit = max_limit
-    max_limit = temp
- ENDIF
       
  N = LPS_GRIDC%NPLWV
 
@@ -862,9 +855,51 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ), &
           & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
 
+ min_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(1))
+ max_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(2))
+
+ IF (max_limit < min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
+
  k = 1
 
- DO j = 1, DIMREAL(LPS_GRIDC%MPLWV), 2
+ IF (min_limit > 0) THEN
+        DO j = 1, min_limit, 2
+        gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
+        gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
+        gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
+
+        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
+             & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
+
+        k = k + 1
+
+        END DO
+ ENDIF
+ IF (max_limit < LPS_GRIDC%MPLWV) THEN
+    DO j = max_limit +2, LPS_GRIDC%MPLWV, 2
+        gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
+        gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
+        gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
+             & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
+
+        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
+             & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
+
+        k = k + 1
+
+    END DO
+ ENDIF
+
+ DO j = min_limit, max_limit, 2
     gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
          & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
     gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
@@ -881,6 +916,15 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
 #else
 
+ min_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(1)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
+ max_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(2)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
+
+ IF (max_limit < min_limit) THEN
+    temp = min_limit
+    min_limit = max_limit
+    max_limit = temp
+ ENDIF
+
  IF (min_limit > 0) THEN
     DO j = 1, min_limit
         gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
@@ -889,16 +933,17 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
         !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
         phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
     END DO
-    IF (max_limit < LPS_GRIDC%RL%NP) THEN
-        DO j = max_limit+1, LPS_GRIDC%RL%NP
-            gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
-            gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
-            gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
-            !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
-            phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
-        END DO
-    ENDIF
  ENDIF
+ IF (max_limit < LPS_GRIDC%RL%NP) THEN
+    DO j = max_limit+1, LPS_GRIDC%RL%NP
+        gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
+        gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
+        gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
+        !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
+        phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
+    END DO
+ ENDIF
+
  DO j = min_limit + 1, max_limit
     gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
     gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
@@ -906,20 +951,6 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
     !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
     phi_work(j) = LPS_phi(j) * eb_k * LPS_kappa2(j)
  END DO
-
-
-
- !---------------------------------------------------------------------------
- !DO j = 1,LPS_GRIDC%RL%NP
- !   gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
- !   gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
- !   gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
- !   !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
- !   phi_work(j) = LPS_phi(j) * eb_k * LPS_kappa2(j)
- !
- !ENDDO
- ---------------------------------------------------------------------------
-
 
 #endif
  !---------------------------------------------------------------------
