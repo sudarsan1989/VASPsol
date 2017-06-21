@@ -877,7 +877,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
         gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
              & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
 
-        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
+        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * 1._q * LPS_kappa2(j),&
              & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
 
         k = k + 1
@@ -893,7 +893,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
         gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
              & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
 
-        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
+        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * 1._q * LPS_kappa2(j),&
              & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
 
         k = k + 1
