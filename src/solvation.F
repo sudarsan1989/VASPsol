@@ -857,7 +857,9 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  !--------------------------------------------------------------------
 #ifdef realmode
 
- print *, 'realmode triggered'
+ ! print *, 'realmode triggered'
+
+ print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ)
 
  k = 1
 
