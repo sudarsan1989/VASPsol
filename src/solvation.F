@@ -859,7 +859,8 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  ! print *, 'realmode triggered'
 
- print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ)
+ print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ), &
+          & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
 
  k = 1
 
