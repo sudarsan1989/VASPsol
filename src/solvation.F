@@ -322,9 +322,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  REAL(q)                :: R(3)
  !! test 7/8/14
 
- INTEGER(q) :: trial_int = 25, min_limit, max_limit, temp
- REAL(q) :: trial_real = 0.88_q
-
+ INTEGER(q) :: min_limit, max_limit, temp
 
  NPC =  CE_GRIDC%MPLWV
  RLNP = CE_GRIDC%RL%NP
@@ -858,6 +856,8 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  !!phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
  !--------------------------------------------------------------------
 #ifdef realmode
+
+ print *, 'realmode triggered'
 
  k = 1
 
