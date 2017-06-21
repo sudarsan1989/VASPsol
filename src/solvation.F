@@ -852,8 +852,10 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  ! print *, 'realmode triggered'
 
- print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ), &
-          & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
+ !-----------------------------------------------------------------------------------
+ ! print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ), &
+ !         & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
+ !-------------------------------------------------------------------------------------
 
  min_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(1))
  max_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(2))
