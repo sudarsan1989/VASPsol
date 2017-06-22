@@ -1105,11 +1105,6 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !CALL WRITE_TO_FILE(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, 'EPRIME', eprime)
  !soltest
 
-
- kprime = eprime * kappa2b_k
-
- eprime = eprime * (eb_k - 1._q)
-
  IF (min_limit > 0) THEN
     print *, 'Setting eb_k to 1'
     DO I = 1, min_limit
@@ -1123,6 +1118,13 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
          eprime(I) = 0._q
     END DO
  ENDIF
+
+
+ kprime = eprime * kappa2b_k
+
+ eprime = eprime * (eb_k - 1._q)
+
+
 
 
  !---------------------------------------------------------------------
