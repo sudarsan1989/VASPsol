@@ -438,7 +438,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     CE_d_eps(I) = 1._q
     CE_kappa2(I) = kappa2b_k * CE_S(I)
     END DO
- ENDIFcd
+ ENDIF
 
  IF (max_limit < CE_GRIDC%RL%NP ) THEN
     DO I= max_limit + 1, CE_GRIDC%RL%NP
