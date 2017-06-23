@@ -893,24 +893,8 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  k = 1
 
- IF (min_limit > 0) THEN
-        DO j = 1, min_limit, 2
-        gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
-        gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
-        gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
+ DO j = 1, DIMREAL(LPS_GRIDC%MPLWV), 2
 
-        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * 1._q * LPS_kappa2(j),&
-             & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
-
-        k = k + 1
-
-        END DO
- ENDIF
-
- DO j = min_odd_limit, max_limit, 2
     gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
          & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
     gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
@@ -924,23 +908,6 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
     k = k + 1
 
  ENDDO
-
- IF (max_limit < LPS_GRIDC%MPLWV) THEN
-    DO j = max_odd_limit, LPS_GRIDC%MPLWV, 2
-        gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
-        gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
-        gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
-             & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
-
-        phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * 1._q * LPS_kappa2(j),&
-             & AIMAG(LPS_phi(k)) * 1._q * LPS_kappa2(j+1), KIND=q )
-
-        k = k + 1
-
-    END DO
- ENDIF
 
 
 #else
@@ -1106,23 +1073,6 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !soltest
 
 
- ! Is this necessary??
-
- IF (min_limit > 0) THEN
-    print *, 'Setting eb_k to 1'
-    DO I = 1, min_limit
-         eprime(I) = 0._q
-    END DO
- ENDIF
- IF (max_limit < EPP_GRIDC%RL%NP)  THEN
-    print *, 'Setting eb_k to 1'
-
-    DO I = max_limit + 1, EPP_GRIDC%RL%NP
-         eprime(I) = 0._q
-    END DO
- ENDIF
-
-
  kprime = eprime * kappa2b_k
 
  eprime = eprime * (eb_k - 1._q)
@@ -1161,19 +1111,9 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !---------------------------------------------------------------------
  RWORK = 0._q
 
- ! Is this necessary??
-
  DO I = 1, EPP_GRIDC%RL%NP
-
-    IF ((I < min_limit) .OR. (I > max_limit))  THEN
-
-        EPP_CWORK_temp = eprime(I) * phisq(I) + &
-             & 1._q * kprime(I) * RWORK_1(I) * RWORK_1(I)
-
-    ELSE
-        EPP_CWORK_temp = eprime(I) * phisq(I) + &
+    EPP_CWORK_temp = eprime(I) * phisq(I) + &
              & eb_k * kprime(I) * RWORK_1(I) * RWORK_1(I)
-    ENDIF
     RWORK(I) = EPP_CWORK_temp
  END DO
 
