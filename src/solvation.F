@@ -429,7 +429,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  IF (min_limit > 0) THEN
     DO I=1, min_limit
     CE_S(I) = 0._q
-    CE_d_eps(I) = 0._q
+    CE_d_eps(I) = 1._q
     CE_kappa2(I) = kappa2b_k * CE_S(I)
     END DO
  ENDIF
@@ -437,7 +437,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  IF (max_limit < CE_GRIDC%RL%NP ) THEN
     DO I= max_limit + 1, CE_GRIDC%RL%NP
     CE_S(I) = 0._q
-    CE_d_eps(I) = 0._q
+    CE_d_eps(I) = 1._q
     CE_kappa2(I) = kappa2b_k * CE_S(I)
     END DO
  ENDIF
@@ -909,6 +909,22 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
         END DO
  ENDIF
+
+ DO j = min_odd_limit, max_limit, 2
+    gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
+         & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
+    gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
+         & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
+    gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
+         & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
+
+    phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
+         & AIMAG(LPS_phi(k)) * eb_k * LPS_kappa2(j+1), KIND=q )
+
+    k = k + 1
+
+ ENDDO
+
  IF (max_limit < LPS_GRIDC%MPLWV) THEN
     DO j = max_odd_limit, LPS_GRIDC%MPLWV, 2
         gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
@@ -926,22 +942,6 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
     END DO
  ENDIF
 
-
-
- DO j = min_odd_limit, max_limit, 2
-    gradphi_x_in(k) = CMPLX( REAL(gradphi_x_in(k),KIND=q)*LPS_d_eps(j),&
-         & AIMAG(gradphi_x_in(k))*LPS_d_eps(j+1),KIND=q)
-    gradphi_y_in(k) = CMPLX( REAL(gradphi_y_in(k),KIND=q)*LPS_d_eps(j),&
-         & AIMAG(gradphi_y_in(k))*LPS_d_eps(j+1),KIND=q)
-    gradphi_z_in(k) = CMPLX( REAL(gradphi_z_in(k),KIND=q)*LPS_d_eps(j),&
-         & AIMAG(gradphi_z_in(k))*LPS_d_eps(j+1),KIND=q)
-
-    phi_work(k) = CMPLX( REAL(LPS_phi(k),KIND=q) * eb_k * LPS_kappa2(j),&
-         & AIMAG(LPS_phi(k)) * eb_k * LPS_kappa2(j+1), KIND=q )
-
-    k = k + 1
-
- ENDDO
 
 #else
 
@@ -1105,6 +1105,9 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !CALL WRITE_TO_FILE(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, 'EPRIME', eprime)
  !soltest
 
+
+ ! Is this necessary??
+
  IF (min_limit > 0) THEN
     print *, 'Setting eb_k to 1'
     DO I = 1, min_limit
@@ -1158,7 +1161,7 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  !---------------------------------------------------------------------
  RWORK = 0._q
 
-
+ ! Is this necessary??
 
  DO I = 1, EPP_GRIDC%RL%NP
 
