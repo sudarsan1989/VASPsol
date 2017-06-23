@@ -418,8 +418,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  !min_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(1))
  !max_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(2))
 
- min_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(1)) * CE_GRIDC%NGX * CE_GRIDC%NGY
- max_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(2)) * CE_GRIDC%NGX * CE_GRIDC%NGY
+ min_limit = INT(REAL(CE_GRIDC%RP%NP, q) * ZLIMS(1))
+ max_limit = INT(REAL(CE_GRIDC%RP%NP, q) * ZLIMS(2))
 
  IF (max_limit < min_limit) THEN
     temp = min_limit
@@ -428,6 +428,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  ENDIF
 
  print *, 'MIN_LIMIT, MAX_LIMIT', min_limit, max_limit
+
+ print *, 'NP, NGZ, NGX, NGY', CE_GRIDC%RP%NP, CE_GRIDC%NGZ, CE_GRIDC%NGX, CE_GRIDC%NGY
 
 
  IF (min_limit > 0) THEN
