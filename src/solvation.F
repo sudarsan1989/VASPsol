@@ -415,8 +415,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
 ! Taking into account that the x-index is the fastest and z-index the slowest in VASP
 
- min_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(1))
- max_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(2))
+ min_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(1)) + (CE_GRIDC%NGX * CE_GRIDC%NGy / 4_q)
+ max_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(2)) + (CE_GRIDC%NGX * CE_GRIDC%NGy / 4_q)
 
  IF (max_limit < min_limit) THEN
     temp = min_limit
@@ -1079,8 +1079,6 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  kprime = eprime * kappa2b_k
 
  eprime = eprime * (eb_k - 1._q)
-
-
 
 
  !---------------------------------------------------------------------
