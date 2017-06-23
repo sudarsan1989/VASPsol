@@ -437,13 +437,6 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     END DO
  ENDIF
 
- IF (max_limit < CE_GRIDC%RL%NP ) THEN
-    DO I= max_limit + 1, CE_GRIDC%RL%NP
-    CE_S(I) = 0._q
-    CE_d_eps(I) = 1._q
-    CE_kappa2(I) = kappa2b_k * CE_S(I)
-    END DO
- ENDIF
 
  DO I = min_limit + 1, max_limit
  CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
@@ -451,6 +444,13 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  CE_kappa2(I) = kappa2b_k * CE_S(I)
  END DO
 
+ IF (max_limit < CE_GRIDC%RL%NP ) THEN
+    DO I= max_limit + 1, CE_GRIDC%RL%NP
+    CE_S(I) = 0._q
+    CE_d_eps(I) = 1._q
+    CE_kappa2(I) = kappa2b_k * CE_S(I)
+    END DO
+ ENDIF
 
 #ifdef debugsol
  IF (SP_IO%IU0>=0)  WRITE(SP_IO%IU0,*) 'Writing EPS'
