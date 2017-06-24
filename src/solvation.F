@@ -415,6 +415,9 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
 ! Taking into account that the x-index is the fastest and z-index the slowest in VASP
 
+
+
+
  min_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(1)) + (CE_GRIDC%NGX * CE_GRIDC%NGy / 4_q)
  max_limit = INT(REAL(CE_GRIDC%RL%NP, q) * ZLIMS(2)) + (CE_GRIDC%NGX * CE_GRIDC%NGy / 4_q)
 
@@ -426,7 +429,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
  print *, 'MIN_LIMIT, MAX_LIMIT', min_limit, max_limit
 
- print *, 'NP, NGZ, NGX, NGY', CE_GRIDC%RL%NP, CE_GRIDC%NGZ, CE_GRIDC%NGX, CE_GRIDC%NGY
+ print *, 'NP, NGZ * NGX * NGY', CE_GRIDC%RL%NP, (CE_GRIDC%NGZ * CE_GRIDC%NGX * CE_GRIDC%NGY) / 4_q
 
 
  IF (min_limit > 0) THEN
@@ -451,6 +454,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     CE_kappa2(I) = kappa2b_k * CE_S(I)
     END DO
  ENDIF
+
 
 #ifdef debugsol
  IF (SP_IO%IU0>=0)  WRITE(SP_IO%IU0,*) 'Writing EPS'
