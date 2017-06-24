@@ -429,7 +429,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
  print *, 'MIN_LIMIT, MAX_LIMIT', min_limit, max_limit
 
- print *, 'NP, NGZ * NGX * NGY', CE_GRIDC%RL%NP, (CE_GRIDC%NGZ * CE_GRIDC%NGX * CE_GRIDC%NGY) / 4_q
+ print *, 'NP, NGZ * NGX * NGY', CE_GRIDC%RL%NP, (CE_GRIDC%NGZ * CE_GRIDC%NGX * CE_GRIDC%NGY)
 
 
  IF (min_limit > 0) THEN
