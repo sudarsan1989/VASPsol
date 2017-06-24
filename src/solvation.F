@@ -446,6 +446,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     CE_d_eps(L) = 1._q   + (eb_k - 1._q) * CE_S(L)
     CE_kappa2(L) = kappa2b_k * CE_S(L)
     END DO
+  END DO
  END DO
 
 #ifdef debugsol
