@@ -415,9 +415,6 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
 ! Taking into account that the x-index is the fastest and z-index the slowest in VASP
 
-
-
-
  min_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(1))
  max_limit = INT(REAL(CE_GRIDC%NGZ, q) * ZLIMS(2))
 
@@ -439,8 +436,8 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  END DO
 
 
- DO I = 0, CE_GRIDC%NGZ
-    DO J = min_limit + 1, max_limit
+ DO I = min_limit, max_limit
+    DO J = 1, CE_GRIDC%NGX * CE_GRIDC%NGY
     L = (I * CE_GRIDC%NGX * CE_GRIDC%NGY) + J
     CE_S(L) = ERRFC( log(MAX(REAL(RWORK(L),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
     CE_d_eps(L) = 1._q   + (eb_k - 1._q) * CE_S(L)
