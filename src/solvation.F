@@ -428,22 +428,33 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
 
  print *, 'NP, NGZ * NGX * NGY', CE_GRIDC%RL%NP, (CE_GRIDC%NGZ * CE_GRIDC%NGX * CE_GRIDC%NGY)
 
+ print *, 'NP,NFAST,NCOL,NROW', CE_GRIDC%RL%NP, CE_GRIDC%RL%NFAST, CE_GRIDC%RL%NCOL, CE_GRIDC%RL%NROW
+
 
  DO I= 1, CE_GRIDC%RL%NP
-    CE_S(I) = 0._q
-    CE_d_eps(I) = 1._q
+    !CE_S(I) = 0._q
+    !CE_d_eps(I) = 1._q
+    !CE_kappa2(I) = kappa2b_k * CE_S(I)
+    CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
+    CE_d_eps(I) = 1._q   + (eb_k - 1._q) * CE_S(I)
     CE_kappa2(I) = kappa2b_k * CE_S(I)
+
  END DO
 
 
+ IF (.FALSE.) THEN
+
+
  DO I = min_limit, max_limit
-    DO J = 1, CE_GRIDC%NGX * CE_GRIDC%NGY
+    DO J = 1, CE_GRIDC%NGZ * CE_GRIDC%NGY
     L = (I * CE_GRIDC%NGX * CE_GRIDC%NGY) + J
     CE_S(L) = ERRFC( log(MAX(REAL(RWORK(L),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
     CE_d_eps(L) = 1._q   + (eb_k - 1._q) * CE_S(L)
     CE_kappa2(L) = kappa2b_k * CE_S(L)
     END DO
  END DO
+
+ END IF
 
 
 #ifdef debugsol
