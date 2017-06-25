@@ -438,8 +438,9 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     CE_kappa2(I) = kappa2b_k * CE_S(I)
  END DO
 
- DO I = min_limit, max_limit
-    DO J = 1, CE_GRIDC%NGX * CE_GRIDC%NGY
+
+ DO I = 0, CE_GRIDC%NGZ
+    DO J = min_limit + 1, max_limit
     L = (I * CE_GRIDC%NGX * CE_GRIDC%NGY) + J
     CE_S(L) = ERRFC( log(MAX(REAL(RWORK(L),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
     CE_d_eps(L) = 1._q   + (eb_k - 1._q) * CE_S(L)
