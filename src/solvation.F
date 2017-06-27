@@ -412,7 +412,7 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
  ! kappa2b_k: inverse of the square of debye length in angstroms
  !-------------------------------------------------------------
 
-! Taking into account that the x-index is the fastest and z-index the slowest in VASP
+! Taking into account that the z-index is the fastest for this particular grid
 
  min_limit = INT(REAL(CE_GRIDC%RL%NROW, q) * ZLIMS(1))
  max_limit = INT(REAL(CE_GRIDC%RL%NROW, q) * ZLIMS(2))
@@ -423,20 +423,10 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     max_limit = temp
  ENDIF
 
- print *, 'MIN_LIMIT, MAX_LIMIT', min_limit, max_limit
-
- print *, 'NP, NGZ * NGX * NGY', CE_GRIDC%RL%NP, (CE_GRIDC%NGZ * CE_GRIDC%NGX * CE_GRIDC%NGY)
-
- print *, 'NP,NFAST,NCOL,NROW', CE_GRIDC%RL%NP, CE_GRIDC%RL%NFAST, CE_GRIDC%RL%NCOL, CE_GRIDC%RL%NROW
-
-
  DO I= 1, CE_GRIDC%RL%NP
     CE_S(I) = 0._q
     CE_d_eps(I) = 1._q
     CE_kappa2(I) = kappa2b_k * CE_S(I)
-    !CE_S(I) = ERRFC( log(MAX(REAL(RWORK(I),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
-    !CE_d_eps(I) = 1._q   + (eb_k - 1._q) * CE_S(I)
-    !CE_kappa2(I) = kappa2b_k * CE_S(I)
  END DO
 
  DO I= 1, CE_GRIDC%RL%NCOL
@@ -812,7 +802,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
  COMPLEX(q),INTENT(INOUT) :: phi_work(LPS_GRIDC%MPLWV)
 
- INTEGER(q) :: N,I,J,k,N1,N2,N3,NC, min_limit, max_limit, temp
+ INTEGER(q) :: N,I,J,k,N1,N2,N3,NC
  INTEGER(q) :: min_odd_limit, max_odd_limit
 
 
@@ -890,35 +880,7 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
 
 #else
 
- min_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(1)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
- max_limit = INT(REAL(LPS_GRIDC%NGZ, q) * ZLIMS(2)) * LPS_GRIDC%NGX * LPS_GRIDC%NGY
-
- IF (max_limit < min_limit) THEN
-    temp = min_limit
-    min_limit = max_limit
-    max_limit = temp
- ENDIF
-
- IF (min_limit > 0) THEN
-    DO j = 1, min_limit
-        gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
-        gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
-        gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
-        !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
-        phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
-    END DO
- ENDIF
- IF (max_limit < LPS_GRIDC%RL%NP) THEN
-    DO j = max_limit+1, LPS_GRIDC%RL%NP
-        gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
-        gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
-        gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
-        !phi_work = phi * eb_k * kappa^2, both phi and kappa2 in real space
-        phi_work(j) = LPS_phi(j) * 1._q * LPS_kappa2(j)
-    END DO
- ENDIF
-
- DO j = min_limit + 1, max_limit
+ DO j = 1, LPS_GRIDC%RL%NP
     gradphi_x_in(j) = gradphi_x_in(j)*LPS_d_eps(j)
     gradphi_y_in(j) = gradphi_y_in(j)*LPS_d_eps(j)
     gradphi_z_in(j) = gradphi_z_in(j)*LPS_d_eps(j)
