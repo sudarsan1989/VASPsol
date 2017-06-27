@@ -35,7 +35,7 @@ MODULE POT_LPCM_K
  PRIVATE :: SHAPE_GRADN, NABLAN, LAPLN
  PRIVATE :: COMPUTE_RHOB, COMPUTE_RHOION
 
- INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
+ INTEGER, PRIVATE, SAVE :: PK_counter = 1
  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
  REAL(q), PRIVATE, SAVE :: CHGMIN = 1E-10_q
  COMPLEX(q), PRIVATE, ALLOCATABLE, SAVE :: Sol_phi(:)
@@ -60,7 +60,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, solnzmin_1, zlims_1)
+     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, zlims_1)
 
  IMPLICIT NONE
 
@@ -78,7 +78,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  COMPLEX(q),INTENT(IN) :: TOTN(SP_GRIDC%MPLWV),PS_TOTN(SP_GRIDC%MPLWV) 
  RGRID,ALLOCATABLE :: SP_d_eps(:), SP_kappa2(:)
  RGRID,ALLOCATABLE :: RWORK(:)
- INTEGER :: I,J, NCGSOL, solnzmin_1
+ INTEGER :: I,J, NCGSOL
  REAL(q) :: zlims_1(2)
  REAL(q)  :: Atot, Ael, Acav, Ecorr1, Ecorr2, Ecorr_cav
  REAL(q) :: sigma_nc_k1,sigma_k1,nc_k1,eb_k1,kappa2b_k1
@@ -121,7 +121,6 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  EDIFFSOL = ediffs
  LRHOB =  LRHOB1
  LRHOION = LRHOION1
- SOLNZMIN = solnzmin_1
  ZLIMS(1) = zlims_1(1)
  ZLIMS(2) = zlims_1(2)
 
@@ -448,21 +447,6 @@ SUBROUTINE CREATECAVITY(CE_GRIDC, CE_LATT_CUR, CE_P, CE_T_INFO, &
     CE_kappa2(K) = kappa2b_k * CE_S(K)
     END DO
  END DO
-
-
- IF (.FALSE.) THEN
-
-
- DO I = min_limit, max_limit
-    DO J = 1, CE_GRIDC%NGZ * CE_GRIDC%NGY
-    L = (I * CE_GRIDC%NGX * CE_GRIDC%NGY) + J
-    CE_S(L) = ERRFC( log(MAX(REAL(RWORK(L),KIND=q),CHGMIN)/nc_k) / SQRT(2._q)/sigma_k ) / 2._q
-    CE_d_eps(L) = 1._q   + (eb_k - 1._q) * CE_S(L)
-    CE_kappa2(L) = kappa2b_k * CE_S(L)
-    END DO
- END DO
-
- END IF
 
 
 #ifdef debugsol
@@ -885,28 +869,6 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  !         & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
  !-------------------------------------------------------------------------------------
 
- min_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(1))
- max_limit = INT(REAL(DIMREAL(LPS_GRIDC%MPLWV), q) * ZLIMS(2))
-
- IF (max_limit < min_limit) THEN
-    temp = min_limit
-    min_limit = max_limit
-    max_limit = temp
- ENDIF
-
-
- IF (MOD(min_limit, 2_q) > 0.5_q) THEN
-    min_odd_limit = min_limit + 2
- ELSE
-    min_odd_limit = min_limit + 1
- ENDIF
-
- IF (MOD(max_limit, 2_q) > 0.5_q) THEN
-    max_odd_limit = max_limit + 2
- ELSE
-    max_odd_limit = max_limit + 1
- ENDIF
-
  k = 1
 
  DO j = 1, DIMREAL(LPS_GRIDC%MPLWV), 2
@@ -1064,8 +1026,8 @@ SUBROUTINE  EPS_POT(EPP_GRIDC, EPP_LATT_CUR, EPP_T_INFO, EPP_P, &
  ALLOCATE(RWORK(DIMREAL(EPP_GRIDC%MPLWV)))
  ALLOCATE(RWORK_1(DIMREAL(EPP_GRIDC%MPLWV)))
 
- min_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(1)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
- max_limit = INT(REAL(EPP_GRIDC%NGZ, q) * ZLIMS(2)) * EPP_GRIDC%NGX * EPP_GRIDC%NGY
+ min_limit = INT(REAL(EPP_GRIDC%RL%NROW, q) * ZLIMS(1))
+ max_limit = INT(REAL(EPP_GRIDC%RL%NROW, q) * ZLIMS(2))
 
  IF (max_limit < min_limit) THEN
     temp = min_limit
@@ -1904,7 +1866,7 @@ MODULE POT_K
 
  PRIVATE :: IONIC_CHARGE, GETRCORE, Fcorrection, JDFTX_INTERFACE
 
- INTEGER, PRIVATE, SAVE :: PK_counter = 1, SOLNZMIN
+ INTEGER, PRIVATE, SAVE :: PK_counter = 1
  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
 
  ! numerical params
@@ -1932,7 +1894,7 @@ MODULE POT_K
 !!======================================================================
  SUBROUTINE SOL_INIT(IO, EDIFF, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k_1, nc_k_1, eb_k_1, tau_1, lambda_d_k_1, kappa2b_k_1, &
-      & EDIFFSOL_1, LRHOB_1, LRHOION_1, solnzmin_1, zlims_1)
+      & EDIFFSOL_1, LRHOB_1, LRHOION_1, zlims_1)
 
    USE poscar, ONLY : type_info 
    USE lattice, ONLY : latt, DIRKAR 
@@ -1952,7 +1914,7 @@ MODULE POT_K
    REAL(q) :: sigma_gauss, RCS(T_INFO%NTYP)
    REAL(q) :: sigma_k_1, nc_k_1, eb_k_1, tau_1
    REAL(q) :: lambda_d_k_1, kappa2b_k_1
-   INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM, solnzmin_1
+   INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM
    REAL(q) :: zlims_1(2)
    REAL(q) :: RDUM,delta_grd,sigma_rc_k0(T_INFO%NTYP)
    COMPLEX(q) CDUM
@@ -1975,7 +1937,6 @@ MODULE POT_K
    LRHOB = LRHOB_1
    LRHOION = LRHOION_1
    EDIFFSOL = EDIFFSOL_1
-   SOLNZMIN = solnzmin_1
    ZLIMS(1) = zlims_1(1)
    ZLIMS(2) = zlims_1(2)
 #ifdef MPI
@@ -2294,7 +2255,7 @@ MODULE POT_K
       CALL Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, SP_T_INFO,&
            & SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, sigma_nc_k,&
            & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k,&
-           & tau, EDIFFSOL, LRHOB, LRHOION, SOLNZMIN, ZLIMS)
+           & tau, EDIFFSOL, LRHOB, LRHOION, ZLIMS)
 
 #ifdef debugsol
       sol_io 'Return from vcorr_lpcm minimization'
@@ -2965,12 +2926,6 @@ MODULE solvation
   LOGICAL, SAVE :: LRHOB=.FALSE.
   LOGICAL, SAVE :: LRHOION=.FALSE.
 
-
-!-----------------------------------------------------------------
-! NEW STUFF
-!-----------------------------------------------------------------
-  INTEGER, SAVE :: SOLNZMIN = 0
-
 ! limits of applying the continuum along the z-direction in direct
 ! coordinates. Default is from 0 to 1 (meaning the entire width of the system)
 
@@ -3130,13 +3085,6 @@ CONTAINS
        CALL RDATAB(LOPEN,'INCAR',IO%IU5,'ZLIMS','=','#',';','F',IDUM,ZLIMS,CDUM,LDUM,CHARAC,N,2,IERR)
 
 
-
-       !---------------------------------------------------------------
-       !SOLNZMIN
-       !---------------------------------------------------------------
-
-       CALL RDATAB(LOPEN,'INCAR',IO%IU5,'SOLNZMIN','=','#',';','I',SOLNZMIN, RDUM, CDUM,LDUM,CHARAC,N,1,IERR)
-
        !---------------------------------------------------------------
        !tau
        !---------------------------------------------------------------
@@ -3285,7 +3233,7 @@ CONTAINS
 
     IF (IO%IU6>=0) THEN
        WRITE(IO%IU6,100) LSOL, eb_k, sigma_k, nc_k, tau, &
-            & lambda_d_k, LRHOB, LRHOION, SOLNZMIN, ZLIMS
+            & lambda_d_k, LRHOB, LRHOION, ZLIMS
     ENDIF
 
 100 FORMAT( &
@@ -3298,9 +3246,7 @@ CONTAINS
              '   LAMBDA_D_K    =',F10.6,  '     Debye length in Angstroms' /&
              '   LRHOB     =',L6,  '     write boundcharge  density' /&
              '   LRHOION     =',L6,  '     write ioniccharge density' /&
-             '   SOLNZMIN    =', I7,  '      writing minimum z-grid limit' /&
-             '   ZLIMS    =', 2F14.6,  '      writing limits of the continuum')
-
+             '   ZLIMS    =', 2F14.6,  '   writing limits of the continuum in the z-direction')
 
     RETURN
 
@@ -3391,7 +3337,7 @@ CONTAINS
     
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
-      & EDIFFSOL, LRHOB, LRHOION, SOLNZMIN, ZLIMS)
+      & EDIFFSOL, LRHOB, LRHOION, ZLIMS)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
          & CHTOT, Vcorr, Ecorr, EIFOR_SOL) 
