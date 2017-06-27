@@ -852,13 +852,6 @@ SUBROUTINE Leps(LPS_GRIDC, LPS_LATT_CUR, LPS_T_INFO, LPS_phi, &
  !--------------------------------------------------------------------
 #ifdef realmode
 
- ! print *, 'realmode triggered'
-
- !-----------------------------------------------------------------------------------
- ! print *, 'dimreal mplwv', DIMREAL(LPS_GRIDC%MPLWV), DIMREAL(LPS_GRIDC%NGZ), &
- !         & DIMREAL(LPS_GRIDC%NGY), DIMREAL(LPS_GRIDC%NGX)
- !-------------------------------------------------------------------------------------
-
  k = 1
 
  DO j = 1, DIMREAL(LPS_GRIDC%MPLWV), 2
@@ -3321,20 +3314,11 @@ CONTAINS
 #endif
 
        POS_SHEET_Z = MOD(DIP%POSCEN(3) + 0.5_q, 1._q)
-       print *, 'POS_SHEET_Z', POS_SHEET_Z
-
        IF ((POS_SHEET_Z >= ZLIMS(1)) .AND. (POS_SHEET_Z <= ZLIMS(2)) ) THEN
-
          DIP%EPSILON = EB_K
-
        ELSE
-
         DIP%EPSILON = 1._q
-
        ENDIF
-
-       print *, "The dipole dielectric constant is now set to:", DIP%EPSILON
-
 
 #ifdef debugsol
        IF (IO_1%IU0>=0) WRITE(IO_1%IU0,*) 'New value of DIP%EPSILON = ', DIP%EPSILON
