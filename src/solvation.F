@@ -17,6 +17,8 @@
 #include "symbol.inc"
 
 #define debugsol
+#define debugsolwf
+
 
 MODULE POT_LPCM_K
 
