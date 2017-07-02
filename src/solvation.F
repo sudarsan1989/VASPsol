@@ -3321,11 +3321,20 @@ CONTAINS
          DIP%EPSILON = EB_K
        ELSE
         DIP%EPSILON = DIP%EPSILON
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        ! print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
+        ! & DIPSOL%DIPOLC
+        ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
+        DIPSOL%LDIPOL = DIP%LDIPOL
+        DIPSOL%IDIPOL = DIP%IDIPOL
+        DIPSOL%POSCEN = DIP%POSCEN
+        DIPSOL%EFIELD = DIP%EFIELD
+        DIPSOL%DIPOL =  DIP%DIPOL
         print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
          & DIPSOL%DIPOLC
 
-        ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
+
+
 
        ENDIF
 
