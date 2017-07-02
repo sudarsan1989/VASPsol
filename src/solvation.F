@@ -3321,7 +3321,7 @@ CONTAINS
          DIP%EPSILON = EB_K
        ELSE
         DIP%EPSILON = 1._q
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%EPSILON
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%ECOMPENSATE
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL
 
         ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
