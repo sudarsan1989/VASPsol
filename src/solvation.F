@@ -3325,11 +3325,10 @@ CONTAINS
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
         ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
-        DIPSOL%LDIPOL = DIP%LDIPOL
-        DIPSOL%IDIPOL = DIP%IDIPOL
+        DIPSOL%LCOR_DIP = DIP%LCOR_DIP
+        DIPSOL%IDIPCO = DIP%IDIPCO
         DIPSOL%POSCEN = DIP%POSCEN
         DIPSOL%EFIELD = DIP%EFIELD
-        DIPSOL%DIPOL =  DIP%DIPOL
         print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
          & DIPSOL%DIPOLC
 
