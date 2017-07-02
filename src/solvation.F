@@ -3335,7 +3335,9 @@ CONTAINS
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
         print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
-        CALL CDIPOL(GRIDC, LATT_CUR,P,T_INFO, &
+
+
+        CALL CDIPOL_CHTOT_REC(GRIDC, LATT_CUR, P , T_INFO, &
               CHTOT, CSTRF, CVTOT, WDES%NCDIJ, NELECT )
         print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
