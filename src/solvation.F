@@ -3269,7 +3269,7 @@ CONTAINS
     USE pseudo
     USE mgrid
     USE wave
-    USE mdipol, dipol_type => dipol
+    USE mdipol, dipol_type => dipol, CDIPOL_SOL => CDIPOL
 
     IMPLICIT NONE
 
@@ -3329,9 +3329,10 @@ CONTAINS
         DIPSOL%IDIPCO = DIP%IDIPCO
         DIPSOL%POSCEN = DIP%POSCEN
         DIPSOL%EFIELD = DIP%EFIELD
-        print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
-         & DIPSOL%DIPOLC
-
+        ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
+        ! & DIPSOL%DIPOLC
+        CALL CDIPOL(GRIDC, LATT_CUR,P,T_INFO, &
+              CHTOT, CSTRF, CVTOT, WDES%NCDIJ, NELECT )
 
 
 
