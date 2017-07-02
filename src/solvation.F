@@ -3320,15 +3320,12 @@ CONTAINS
        IF ((POS_SHEET_Z >= ZLIMS(1)) .AND. (POS_SHEET_Z <= ZLIMS(2)) ) THEN
          DIP%EPSILON = EB_K
        ELSE
-        DIP%EPSILON = 1._q
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL
-
-
-
-        print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL
+        DIP%EPSILON = DIP%EPSILON
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
+         & DIPSOL%DIPOLC
 
         ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
-
 
        ENDIF
 
