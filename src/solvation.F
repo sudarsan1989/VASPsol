@@ -3320,6 +3320,7 @@ CONTAINS
          DIP%EPSILON = EB_K
        ELSE
         DIP%EPSILON = 1._q
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EMONO, DIP%EDIPOL, DIP%EQUAD
        ENDIF
 
 #ifdef debugsol
