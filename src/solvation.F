@@ -3269,7 +3269,7 @@ CONTAINS
     USE pseudo
     USE mgrid
     USE wave
-    USE mdipol
+    USE mdipol, dipol_type => dipol
 
     IMPLICIT NONE
 
@@ -3279,7 +3279,7 @@ CONTAINS
     TYPE (potcar), INTENT(IN) :: P(T_INFO%NTYP)
     TYPE (wavedes), INTENT(IN) :: WDES
     TYPE (grid_3d), INTENT(IN) :: GRIDC
-    TYPE (dipol) DIPSOL
+    TYPE (dipol_type) DIPSOL
     
     COMPLEX(q) CHTOT(GRIDC%MPLWV,WDES%NCDIJ)
     COMPLEX(q) CVTOT(GRIDC%MPLWV,WDES%NCDIJ)
