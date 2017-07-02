@@ -3283,6 +3283,9 @@ CONTAINS
     
     COMPLEX(q) CHTOT(GRIDC%MPLWV,WDES%NCDIJ)
     COMPLEX(q) CVTOT(GRIDC%MPLWV,WDES%NCDIJ)
+    COMPLEX(q) CSTRF(GRIDC%MPLWV,T_INFO%NTYP)
+    REAL(q) NELECT
+
     
 ! local variables
     REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z
@@ -3331,8 +3334,10 @@ CONTAINS
         DIPSOL%EFIELD = DIP%EFIELD
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
         CALL CDIPOL(GRIDC, LATT_CUR,P,T_INFO, &
               CHTOT, CSTRF, CVTOT, WDES%NCDIJ, NELECT )
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
 
 
