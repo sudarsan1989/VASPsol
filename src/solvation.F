@@ -3279,6 +3279,7 @@ CONTAINS
     TYPE (potcar), INTENT(IN) :: P(T_INFO%NTYP)
     TYPE (wavedes), INTENT(IN) :: WDES
     TYPE (grid_3d), INTENT(IN) :: GRIDC
+    TYPE (mdipol) DIPSOL
     
     COMPLEX(q) CHTOT(GRIDC%MPLWV,WDES%NCDIJ)
     COMPLEX(q) CVTOT(GRIDC%MPLWV,WDES%NCDIJ)
@@ -3320,7 +3321,12 @@ CONTAINS
          DIP%EPSILON = EB_K
        ELSE
         DIP%EPSILON = 1._q
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EMONO, DIP%EDIPOL, DIP%EQUAD
+        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%EPSILON
+        print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL
+
+        ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
+
+
        ENDIF
 
 #ifdef debugsol
