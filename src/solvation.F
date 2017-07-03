@@ -62,7 +62,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, zlims_1)
+     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, zlims_1, RHOB)
 
  IMPLICIT NONE
 
@@ -2112,7 +2112,7 @@ MODULE POT_K
 !!
 !!=====================================================================
  SUBROUTINE Vcorrection(SP_GRIDC, SP_P, SP_LATT_CUR, SP_T_INFO, WDES,&
-                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL)
+                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
 
   USE constant 
   USE poscar, ONLY : type_info 
@@ -2136,6 +2136,9 @@ MODULE POT_K
   COMPLEX(q),ALLOCATABLE :: SP_N(:),TOTN(:),SP_N_ION(:)
   COMPLEX(q),ALLOCATABLE :: Vdiel(:)
   COMPLEX(q),ALLOCATABLE :: PS_TOTN(:)
+  RGRID,ALLOCATABLE :: RHOB(:)
+
+
   ! electrost. pot. diff * n   and Vdiel * n respectively
   REAL(q) :: Ecorr3, Ecorr4 
   REAL(q),INTENT(OUT) :: Ecorr ! Atot - Ecorr3 - Ecorr4
@@ -2148,6 +2151,7 @@ MODULE POT_K
     ALLOCATE(Vdiel(SP_GRIDC%MPLWV))
     ALLOCATE(PS_TOTN(SP_GRIDC%MPLWV))
     ALLOCATE(SP_N_ION(SP_GRIDC%MPLWV))
+    ALLOCATE(RHOB(DIMREAL(SP_GRIDC%MPLWV)))
   
     Vdiel = 0._q
     Ecorr3 = 0._q
@@ -2212,7 +2216,7 @@ MODULE POT_K
       CALL Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, SP_T_INFO,&
            & SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, sigma_nc_k,&
            & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k,&
-           & tau, EDIFFSOL, LRHOB, LRHOION, ZLIMS)
+           & tau, EDIFFSOL, LRHOB, LRHOION, ZLIMS, RHOB)
 
 #ifdef debugsol
       sol_io 'Return from vcorr_lpcm minimization'
@@ -2297,6 +2301,7 @@ MODULE POT_K
    DEALLOCATE(Vdiel)
    DEALLOCATE(PS_TOTN)
    DEALLOCATE(SP_N_ION)
+   DEALLOCATE(RHOB)
 
 !-------------------------------------------------------------
 !if LSOL = .FALSE., sets Vcorr and Ecorr to 0._q
@@ -3286,6 +3291,7 @@ CONTAINS
     COMPLEX(q) CVTOT_NEW(GRIDC%MPLWV,WDES%NCDIJ)
     COMPLEX(q) CSTRF(GRIDC%MPLWV,T_INFO%NTYP)
     REAL(q) NELECT
+    REAL, ALLOCATABLE :: RHOB(:)
 
     
 ! local variables
@@ -3297,13 +3303,15 @@ CONTAINS
     IF (.NOT.LSOL) RETURN
 
     ALLOCATE(Vcorr(GRIDC%MPLWV))
-    
+    ALLOCATE(RHOB(GRIDC%MPLWV))
+
+
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
       & EDIFFSOL, LRHOB, LRHOION, ZLIMS)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
-         & CHTOT, Vcorr, Ecorr, EIFOR_SOL) 
+         & CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
 
     DO I = 1, GRIDC%RC%NP
        CVTOT(I,1) = CVTOT(I,1) + Vcorr(I)
@@ -3346,26 +3354,18 @@ CONTAINS
 
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
         DO I = 1, GRIDC%RC%NP
         CVTOT_ORIG(I,1) = CVTOT(I,1)
         ENDDO
 
 
-        CALL CDIPOL_CHTOT_REC(GRIDC, LATT_CUR, P , T_INFO, &
-              CHTOT_DUMMY, CSTRF, CVTOT, WDES%NCDIJ, NELECT )
-
-        DO I = 1, GRIDC%RC%NP
-        CVTOT_NEW(I,1) = CVTOT(I,1)
-        ENDDO
-
-        DO I = 1, GRIDC%RC%NP
-        CVTOT(I,1) = CVTOT_ORIG(I,1)
-        ENDDO
+        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
+              RHOB, CSTRF, CVTOT, WDES%NCDIJ, NELECT)
 
 
-        print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        print *, 'Dipole corrections new', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
 
 
@@ -3378,7 +3378,8 @@ CONTAINS
     ENDIF
 
     DEALLOCATE(Vcorr)
-      
+    DEALLOCATE(RHOB)
+
     RETURN
 
   END SUBROUTINE SOL_VCORRECTION
