@@ -3364,7 +3364,7 @@ CONTAINS
         CVTOT_ORIG(I,1) = CVTOT(I,1)
         ENDDO
 
-        RHOB = RHOB / LATT_CUR%OMEGA
+        RHOB = RHOB / LATT_CUR%OMEGA * 2
 
 
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
