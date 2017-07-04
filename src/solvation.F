@@ -2114,7 +2114,7 @@ MODULE POT_K
 !!
 !!=====================================================================
  SUBROUTINE Vcorrection(SP_GRIDC, SP_P, SP_LATT_CUR, SP_T_INFO, WDES,&
-                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL)
+                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
 
   USE constant 
   USE poscar, ONLY : type_info 
@@ -3295,6 +3295,7 @@ CONTAINS
     COMPLEX(q) CSTRF(GRIDC%MPLWV,T_INFO%NTYP)
     REAL(q) NELECT
     ! RGRID, ALLOCATABLE :: RHOB(:)
+    RGRID :: RHOB(DIMREAL(GRIDC%MPLWV))
 
     
 ! local variables
@@ -3314,7 +3315,7 @@ CONTAINS
       & EDIFFSOL, LRHOB, LRHOION, ZLIMS)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
-         & CHTOT, Vcorr, Ecorr, EIFOR_SOL)
+         & CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
 
     DO I = 1, GRIDC%RC%NP
        CVTOT(I,1) = CVTOT(I,1) + Vcorr(I)
@@ -3364,9 +3365,8 @@ CONTAINS
         ENDDO
 
 
-        !CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-        !      RHOB, CSTRF, CVTOT, WDES%NCDIJ, NELECT)
-
+        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
+              RHOB, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
