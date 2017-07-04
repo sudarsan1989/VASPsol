@@ -2112,7 +2112,7 @@ MODULE POT_K
 !!
 !!=====================================================================
  SUBROUTINE Vcorrection(SP_GRIDC, SP_P, SP_LATT_CUR, SP_T_INFO, WDES,&
-                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
+                      & SP_CHTOT, Vcorr, Ecorr, EIFOR_SOL)
 
   USE constant 
   USE poscar, ONLY : type_info 
@@ -3311,7 +3311,7 @@ CONTAINS
       & EDIFFSOL, LRHOB, LRHOION, ZLIMS)
          
     CALL VCORRECTION(GRIDC, P, LATT_CUR, T_INFO, WDES, &
-         & CHTOT, Vcorr, Ecorr, EIFOR_SOL, RHOB)
+         & CHTOT, Vcorr, Ecorr, EIFOR_SOL)
 
     DO I = 1, GRIDC%RC%NP
        CVTOT(I,1) = CVTOT(I,1) + Vcorr(I)
