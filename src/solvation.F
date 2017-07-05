@@ -3366,6 +3366,8 @@ CONTAINS
 
         RHOB = RHOB / LATT_CUR%OMEGA * 2
 
+        print *, 'RHOB(100)', RHOB(100)
+
 
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
               RHOB, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
