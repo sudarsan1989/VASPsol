@@ -3304,7 +3304,7 @@ CONTAINS
 ! local variables
     REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
-    INTEGER :: I
+    INTEGER :: I, J, ISP
 
 ! early exit if possible
     IF (.NOT.LSOL) RETURN
@@ -3373,9 +3373,11 @@ CONTAINS
 
         !CHTOT_DUMMY in real space
 
-        DO I = 1, GRIDC%RC%NP
-        CHTOT_DUMMY(I) = CWORK(I, 1) + RHOB(I)
-        ENDDO
+        DO ISP=1,WDES%NCDIJ
+            DO J = 1, GRIDC%RC%NP
+            CHTOT_DUMMY(J) = CWORK(J, ISP) + RHOB(J)
+            ENDDO
+        END DO
 
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
                & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
