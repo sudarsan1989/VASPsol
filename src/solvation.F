@@ -3277,7 +3277,7 @@ CONTAINS
     USE pseudo
     USE mgrid
     USE wave
-    USE mdipol, dipol_type => dipol, CDIPOL_SOL => CDIPOL
+    USE mdipol, dipol_type => dipol
 
     IMPLICIT NONE
 
