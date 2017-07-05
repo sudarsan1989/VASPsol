@@ -3277,7 +3277,7 @@ CONTAINS
     USE pseudo
     USE mgrid
     USE wave
-    USE mdipol, dipol_type => dipol
+    USE mdipol, dipol_type => dipol, CDIPOL_SOL => CDIPOL
 
     IMPLICIT NONE
 
@@ -3379,10 +3379,10 @@ CONTAINS
             ENDDO
         END DO
 
-        !CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-        !       & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
+        CALL CDIPOL_SOL(GRIDC, LATT_CUR, P , T_INFO, &
+               & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
 
-        print *, 'Dipole corrections new', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        print *, 'Dipole corrections new', DIPSOL%ECORR, DIPSOL%EDIPOL, DIPSOL%DIPOLC
 
        ENDIF
 
