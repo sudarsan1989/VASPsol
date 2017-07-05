@@ -3375,7 +3375,7 @@ CONTAINS
 
         DO ISP=1,WDES%NCDIJ
             DO J = 1, GRIDC%RC%NP
-            CHTOT_DUMMY(J) = CWORK(J, ISP) + RHOB(J)
+            CHTOT_DUMMY(J) = (CWORK(J, ISP) + RHOB(J)) / LATT_CUT%OMEGA
             ENDDO
         END DO
 
