@@ -3351,11 +3351,6 @@ CONTAINS
         CVTOT_NEW(I,1) = CVTOT(I,1)
         ENDDO
 
-
-        DO I = 1, GRIDC%RC%NP
-        CHTOT_DUMMY(I,1) = CHTOT(I,1) * 0.001_q
-        ENDDO
-
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
         print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
@@ -3364,16 +3359,24 @@ CONTAINS
         CVTOT_ORIG(I,1) = CVTOT(I,1)
         ENDDO
 
-        RHOB = RHOB / LATT_CUR%OMEGA * 2
+        RHOB = RHOB / LATT_CUR%OMEGA
+
+        DO I = 1, GRIDC%RC%NP
+        CHTOT_DUMMY(I,1) = CHTOT(I,1) + RHOB(I)
+        ENDDO
 
         print *, 'RHOB(100)', RHOB(100)
 
+        !CHTOT_DUMMY in rec space
 
-        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-              RHOB, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
+        CDIPOL_CHTOT_REC(GRIDC, LATT_CUR, P , T_INFO, &
+              CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
+
+
+        !CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
+        !      RHOB, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
-
 
 
        ENDIF
