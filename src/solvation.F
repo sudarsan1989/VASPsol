@@ -3379,8 +3379,8 @@ CONTAINS
             ENDDO
         END DO
 
-        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-               & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
+        !CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
+        !       & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
 
