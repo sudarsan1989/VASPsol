@@ -3359,7 +3359,7 @@ CONTAINS
         CVTOT_ORIG(I,1) = CVTOT(I,1)
         ENDDO
 
-        RHOB = RHOB / LATT_CUR%OMEGA
+        RHOB = RHOB  !/ LATT_CUR%OMEGA
 
         DO I = 1, GRIDC%RC%NP
         CHTOT_DUMMY(I,1) = CHTOT(I,1) + RHOB(I)
