@@ -3379,7 +3379,7 @@ CONTAINS
             ENDDO
         END DO
 
-        CALL CDIPOL_SOL(GRIDC, LATT_CUR, P , T_INFO, &
+        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
                & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
 
         print *, 'Dipole corrections new', DIPSOL%ECORR, DIPSOL%EDIPOL, DIPSOL%DIPOLC
