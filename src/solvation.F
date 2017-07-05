@@ -3374,7 +3374,7 @@ CONTAINS
         !CHTOT_DUMMY in real space
 
         DO I = 1, GRIDC%RC%NP
-        CHTOT_DUMMY(I) = CWORK(I) + RHOB(I)
+        CHTOT_DUMMY(I) = CWORK(I, 1) + RHOB(I)
         ENDDO
 
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
