@@ -3355,7 +3355,7 @@ CONTAINS
 
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
-        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
+        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM
 
         DO I = 1, GRIDC%RC%NP
         CVTOT_ORIG(I,1) = CVTOT(I,1)
@@ -3382,7 +3382,7 @@ CONTAINS
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
                & CHTOT_DUMMY, CSTRF, CVTOT, WDES%NCDIJ, NELECT)
 
-        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%DIRECT
+        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM
 
        ENDIF
 
