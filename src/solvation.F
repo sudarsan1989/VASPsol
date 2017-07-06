@@ -3375,14 +3375,14 @@ CONTAINS
 
         DO ISP=1,WDES%NCDIJ
             DO J = 1, GRIDC%RC%NP
-            CHTOT_DUMMY(J) = (CWORK(J, ISP) + RHOB(J)) / LATT_CUR%OMEGA
+            CHTOT_DUMMY(J) = CWORK(J, ISP) + RHOB(J)  !/ LATT_CUR%OMEGA)
             ENDDO
         END DO
 
         CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-               & CHTOT_DUMMY, CSTRF, CVTOT_ORIG, WDES%NCDIJ, NELECT)
+               & CHTOT_DUMMY, CSTRF, CVTOT, WDES%NCDIJ, NELECT)
 
-        print *, 'Dipole corrections new', DIPSOL%ECORR, DIPSOL%EDIPOL, DIPSOL%DIPOLC
+        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%DIRECT
 
        ENDIF
 
