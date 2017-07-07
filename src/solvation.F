@@ -3301,12 +3301,10 @@ CONTAINS
 
     
 ! local variables
-    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, DIPOLSOLZ, PI
+    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, XX, DIPOLSOLZ, PI
     REAL(q) :: SUM, SUM2, SUM_
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
-    INTEGER :: I, J, ISP, NOUT, NOUTH, IND
-    IMPLICIT REAL(q) (A-B,D-H,O-Z)
-
+    INTEGER :: I, J, ISP, NOUT, NOUTH, IND, II
 
 ! early exit if possible
     IF (.NOT.LSOL) RETURN
