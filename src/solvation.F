@@ -3355,7 +3355,7 @@ CONTAINS
 
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
-        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM
+        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%DIPEXT
 
         DO I = 1, GRIDC%RC%NP
         CVTOT_ORIG(I,1) = CVTOT(I,1)
@@ -3363,26 +3363,9 @@ CONTAINS
 
         ! RHOB = RHOB  !/ LATT_CUR%OMEGA
 
-        DO ISP=1,WDES%NCDIJ
-         CALL RC_ADD(CHTOT(1,ISP),1.0_q,CHTOT(1,ISP),0.0_q,CWORK(1,ISP),GRIDC)
-         CALL FFT3D(CWORK(1,ISP),GRIDC,1)
-        ENDDO
-        IF (WDES%NCDIJ >1) CALL MAG_DENSITY(CWORK, CWORK, GRIDC, WDES%NCDIJ)
-
         print *, 'RHOB(100)', RHOB(100)
 
-        !CHTOT_DUMMY in real space
-
-        DO ISP=1,WDES%NCDIJ
-            DO J = 1, GRIDC%RC%NP
-            CHTOT_DUMMY(J) = CWORK(J, ISP) + RHOB(J)  !/ LATT_CUR%OMEGA)
-            ENDDO
-        END DO
-
-        CALL CDIPOL(GRIDC, LATT_CUR, P , T_INFO, &
-               & CHTOT_DUMMY, CSTRF, CVTOT, WDES%NCDIJ, NELECT)
-
-        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM
+        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
        ENDIF
 
