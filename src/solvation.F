@@ -3301,9 +3301,9 @@ CONTAINS
 
     
 ! local variables
-    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z
+    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, XX, DIPOLSOLZ
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
-    INTEGER :: I, J, ISP
+    INTEGER :: I, J, ISP, NOUT, SUM, SUM2, IND, II
 
 ! early exit if possible
     IF (.NOT.LSOL) RETURN
@@ -3340,13 +3340,9 @@ CONTAINS
          DIP%EPSILON = EB_K
        ELSE
         DIP%EPSILON = DIP%EPSILON
-        ! print *, 'Dipole corrections', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC
-        ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
-        ! & DIPSOL%DIPOLC
+
         ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
 
-        ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
-        ! & DIPSOL%DIPOLC
         print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%DIPEXT
 
         ! RHOB = RHOB  !/ LATT_CUR%OMEGA
@@ -3354,7 +3350,35 @@ CONTAINS
 
         CALL AVERAG(GRIDC,DIP%IDIPCO, RHOB, DENLIN, .FALSE.)
 
+        NOUT=GRIDC%NGPTAR(IDIP)
+
+        NOUTH=NOUT/2
+
         print *, 'DENLIN(100)', DENLIN(100)
+        DENLIN(1:NOUT)=DENLIN(1:NOUT)/NOUT
+
+          SUM_=0
+          SUM2=0
+
+          F=1._q/NOUT
+
+          DO IND=1,NOUT
+             II=MOD(IND-DIP%INDMIN+NOUT,NOUT)-NOUTH
+             XX=ABS(ABS(II)-NOUTH)
+             CUTOFF=1.0
+             IF (XX > WIDTH)  THEN
+                CUTOFF = 1.0
+             ELSE
+                CUTOFF= ABS(SIN(PI*XX/WIDTH/2))
+             ENDIF
+             SUM_=SUM_+DENLIN(IND)*II*F*CUTOFF
+             SUM2=SUM2+DENLIN(IND)*(II*F)*(II*F)*CUTOFF*CUTOFF
+          ENDDO
+          DIPOLSOLZ=SUM_
+          SUM2=SUM2*LATT_CUR%ANORM(DIP%IDIPCO)**2
+          DIP%QUAD=DIP%QUAD+SUM2
+
+          print *, 'dipolsolz', DIPOLSOLZ
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
