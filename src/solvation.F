@@ -3296,8 +3296,7 @@ CONTAINS
     REAL(q) NELECT
     ! RGRID, ALLOCATABLE :: RHOB(:)
     RGRID :: RHOB(DIMREAL(GRIDC%MPLWV))
-    RGRID :: CHTOT_DUMMY(DIMREAL(GRIDC%MPLWV))
-    COMPLEX(q), ALLOCATABLE::  CWORK(:,:)
+    REAL(q),ALLOCATABLE :: DENLIN(:)
 
 
     
@@ -3310,7 +3309,9 @@ CONTAINS
     IF (.NOT.LSOL) RETURN
 
     ALLOCATE(Vcorr(GRIDC%MPLWV))
-    ALLOCATE(CWORK(GRIDC%MPLWV,WDES%NCDIJ))
+    ALLOCATE(DENLIN(MAX(GRIDC%NGX,GRIDC%NGY,GRIDC%NGZ)) )
+
+
 
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
@@ -3343,27 +3344,17 @@ CONTAINS
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
         ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
-        DIPSOL%LCOR_DIP = DIP%LCOR_DIP
-        DIPSOL%IDIPCO = DIP%IDIPCO
-        DIPSOL%POSCEN = DIP%POSCEN
-        DIPSOL%EFIELD = DIP%EFIELD
-
-
-        DO I = 1, GRIDC%RC%NP
-        CVTOT_NEW(I,1) = CVTOT(I,1)
-        ENDDO
 
         ! print *, 'Dipole corrections', DIPSOL%ECORR, DIPSOL%EFIELD, DIPSOL%EDIPOL, &
         ! & DIPSOL%DIPOLC
         print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%DIPEXT
 
-        DO I = 1, GRIDC%RC%NP
-        CVTOT_ORIG(I,1) = CVTOT(I,1)
-        ENDDO
-
         ! RHOB = RHOB  !/ LATT_CUR%OMEGA
 
-        print *, 'RHOB(100)', RHOB(100)
+
+        CALL AVERAG(GRIDC,DIP%IDIPCO, RHOB, DENLIN, .FALSE.)
+
+        print *, 'DENLIN(100)', DENLIN(100)
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
@@ -3376,7 +3367,7 @@ CONTAINS
     ENDIF
 
     DEALLOCATE(Vcorr)
-    DEALLOCATE(CWORK)
+    DEALLOCATE(DENLIN)
     ! DEALLOCATE(RHOB)
 
     RETURN
