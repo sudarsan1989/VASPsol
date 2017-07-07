@@ -3301,7 +3301,8 @@ CONTAINS
 
     
 ! local variables
-    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, XX, DIPOLSOLZ, PI
+    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, XX, DIPOLSOLZ, PI
+    REAL(q), PARAMETER :: WIDTH = 4
     REAL(q) :: SUM, SUM2, SUM_
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
     INTEGER :: I, J, ISP, NOUT, NOUTH, IND, II
