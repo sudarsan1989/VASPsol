@@ -3301,9 +3301,9 @@ CONTAINS
 
     
 ! local variables
-    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, XX, DIPOLSOLZ
+    REAL(q) :: Ecorr, EDIFF, POS_SHEET_Z, F, CUTOFF, WIDTH, XX, DIPOLSOLZ, PI
     COMPLEX(q), ALLOCATABLE :: Vcorr(:)
-    INTEGER :: I, J, ISP, NOUT, SUM, SUM2, IND, II
+    INTEGER :: I, J, ISP, NOUT, NOUTH SUM, SUM2, IND, II
 
 ! early exit if possible
     IF (.NOT.LSOL) RETURN
@@ -3311,7 +3311,7 @@ CONTAINS
     ALLOCATE(Vcorr(GRIDC%MPLWV))
     ALLOCATE(DENLIN(MAX(GRIDC%NGX,GRIDC%NGY,GRIDC%NGZ)) )
 
-
+    PI = 22._q / 7._q
 
     CALL SOL_INIT(IO_1, EDIFF_1, INFO, LATT_CUR, GRIDC, T_INFO, P, &
       & sigma_k, nc_k, eb_k, tau, lambda_d_k, kappa2b_k, &
@@ -3350,7 +3350,7 @@ CONTAINS
 
         CALL AVERAG(GRIDC,DIP%IDIPCO, RHOB, DENLIN, .FALSE.)
 
-        NOUT=GRIDC%NGPTAR(IDIP)
+        NOUT=GRIDC%NGPTAR(DIP%IDIPCO)
 
         NOUTH=NOUT/2
 
