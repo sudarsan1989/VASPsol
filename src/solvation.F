@@ -3364,7 +3364,7 @@ CONTAINS
           F=1._q/NOUT
 
           DO IND=1,NOUT
-             II=MOD(IND-DIP%INDMIN+NOUT,NOUT)-NOUTH
+             II=MOD(IND-DIP%INDMIN(DIP%IDIPCO)+NOUT,NOUT)-NOUTH
              XX=ABS(ABS(II)-NOUTH)
              CUTOFF=1.0
              IF (XX > WIDTH)  THEN
