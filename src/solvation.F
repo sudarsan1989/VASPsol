@@ -3381,7 +3381,7 @@ CONTAINS
           DIP%QUAD=DIP%QUAD+SUM2
 
           print *, 'dipolsolz', DIPOLSOLZ
-          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ
+          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * 10._q
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
