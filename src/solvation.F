@@ -3297,6 +3297,7 @@ CONTAINS
     REAL(q) NELECT
     ! RGRID, ALLOCATABLE :: RHOB(:)
     RGRID :: RHOB(DIMREAL(GRIDC%MPLWV))
+    RGRID :: Vcorr_out(GRIDC%RL%NP)
     REAL(q),ALLOCATABLE :: DENLIN(:)
 
 
@@ -3325,9 +3326,10 @@ CONTAINS
 
     DO I = 1, GRIDC%RC%NP
        CVTOT(I,1) = CVTOT(I,1) + Vcorr(I)
+       Vcorr_out(I) = Vcorr(I)
     ENDDO
 
-    CALL WRITE_TO_FILE(GRIDC, LATT_CUR, T_INFO, 'VCORR', Vcorr)
+    CALL WRITE_TO_FILE(GRIDC, LATT_CUR, T_INFO, 'VCORR', Vcorr_out)
 
     Ediel_sol = Ecorr
 
