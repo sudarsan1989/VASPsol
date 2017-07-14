@@ -3348,13 +3348,6 @@ CONTAINS
        ELSE
         DIP%EPSILON = DIP%EPSILON
 
-        ! Now get RHOB, compute the dipole correction to this and add it to DIP%ECORR or DIP%EFIELD
-
-        print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%DIPEXT
-
-        !RHOB = RHOB  !* LATT_CUR%OMEGA
-
-
         CALL AVERAG(GRIDC,DIP%IDIPCO, RHOB, DENLIN, .FALSE.)
 
         NOUT=GRIDC%NGPTAR(DIP%IDIPCO)
@@ -3386,7 +3379,7 @@ CONTAINS
           DIP%QUAD=DIP%QUAD+SUM2
 
           print *, 'dipolsolz', DIPOLSOLZ
-          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * GRIDC%RC%NROW  !DIPOLSOLZ * 4 * PI
+          ! DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * GRIDC%RC%NROW  !DIPOLSOLZ * 4 * PI
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
