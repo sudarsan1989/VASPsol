@@ -3326,6 +3326,8 @@ CONTAINS
        CVTOT(I,1) = CVTOT(I,1) + Vcorr(I)
     ENDDO
 
+    CALL WRITE_TO_FILE(GRIDC, LATT_CUR, T_INFO, 'VCORR', Vcorr)
+
     Ediel_sol = Ecorr
 
 !setting the value of epsilon used in computing the dipole and monopole corrections            
