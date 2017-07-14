@@ -3347,7 +3347,7 @@ CONTAINS
 
         print *, 'Dipole corrections old', DIP%ECORR, DIP%EFIELD, DIP%EDIPOL, DIP%DIPOLC, DIP%DIPEXT
 
-        RHOB = RHOB  !* LATT_CUR%OMEGA
+        !RHOB = RHOB  !* LATT_CUR%OMEGA
 
 
         CALL AVERAG(GRIDC,DIP%IDIPCO, RHOB, DENLIN, .FALSE.)
@@ -3381,7 +3381,7 @@ CONTAINS
           DIP%QUAD=DIP%QUAD+SUM2
 
           print *, 'dipolsolz', DIPOLSOLZ
-          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * 4 * PI
+          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * GRIDC%RC%NROW  !DIPOLSOLZ * 4 * PI
 
         print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
 
