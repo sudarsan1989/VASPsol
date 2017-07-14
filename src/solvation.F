@@ -3278,6 +3278,7 @@ CONTAINS
     USE mgrid
     USE wave
     USE mdipol, dipol_type => dipol
+    USE POT_LPCM_K, only : WRITE_TO_FILE
 
     IMPLICIT NONE
 
