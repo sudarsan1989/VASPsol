@@ -3297,7 +3297,7 @@ CONTAINS
     REAL(q) NELECT
     ! RGRID, ALLOCATABLE :: RHOB(:)
     RGRID :: RHOB(DIMREAL(GRIDC%MPLWV))
-    RGRID :: Vcorr_out(GRIDC%RL%NP)
+    RGRID :: Vcorr_out(DIMREAL(GRIDC%MPLWV))
     REAL(q),ALLOCATABLE :: DENLIN(:)
 
 
@@ -3354,7 +3354,6 @@ CONTAINS
 
         NOUTH=NOUT/2
 
-        print *, 'DENLIN(100)', DENLIN(100)
         DENLIN(1:NOUT)=DENLIN(1:NOUT)/NOUT
 
           SUM_=0
