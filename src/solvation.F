@@ -2431,6 +2431,10 @@ SUBROUTINE IONIC_CHARGE (SP_GRIDC,SP_LATT_CUR,SP_P,SP_T_INFO,SP_N, &
        ENDDO !end of loop over reciproc vectors
 
     ENDDO ions
+
+    print *, 'sigma_nc_k:', sigma_nc_k
+    print *, 'sigma_rc_k:', sigma_rc_k
+    print *, 'CORE_C:', CORE_C
     
     SP_NIS = SP_NIS + SP_T_INFO%NITYP(SP_NT)
 
@@ -3379,9 +3383,6 @@ CONTAINS
 
           print *, 'dipolsolz', DIPOLSOLZ
           ! DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ * GRIDC%RC%NROW  !DIPOLSOLZ * 4 * PI
-
-        print *, 'Dipole corrections new', DIP%ECORR, DIP%EDIPOL, DIP%DIPOLC, DIP%VACUUM, DIP%DIPEXT
-
        ENDIF
 
 #ifdef debugsol
