@@ -3435,7 +3435,7 @@ CONTAINS
           DIP%QUAD=DIP%QUAD+SUM2
 
           print *, 'dipolsolz', DIPOLSOLZ
-          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ   !DIPOLSOLZ * 4 * PI
+          DIP%DIPEXT(DIP%IDIPCO) = DIPOLSOLZ / LATT_CUR%OMEGA   !DIPOLSOLZ * 4 * PI
        ENDIF
 
 #ifdef debugsol
