@@ -62,7 +62,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, sigma_ionic_1 tau1, ediffs, LRHOB1, LRHOION1, zlims_1, RHOB)
+     & sigma_rc_k1, sigma_ionic_1, tau1, ediffs, LRHOB1, LRHOION1, zlims_1, RHOB)
 
  IMPLICIT NONE
 
