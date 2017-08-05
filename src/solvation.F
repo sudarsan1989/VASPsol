@@ -2455,8 +2455,15 @@ SUBROUTINE IONIC_CHARGE (SP_GRIDC,SP_LATT_CUR,SP_P,SP_T_INFO,SP_N, &
           !------------------------------------------------------
           IF ( flag == 1) THEN
 
+             ! SP_N(SP_NG) = SP_N(SP_NG) - (SP_P(SP_NT)%ZVALF) * &
+             !     & SP_CEXPF*EXP(-0.5_q*SP_GSQU*(sigma_nc_k**2))
+
+
+             !Using species specific Gaussian
+
              SP_N(SP_NG) = SP_N(SP_NG) - (SP_P(SP_NT)%ZVALF) * &
-                  & SP_CEXPF*EXP(-0.5_q*SP_GSQU*(sigma_nc_k**2))
+                  & SP_CEXPF*EXP(-0.5_q*SP_GSQU*(sigma_ionic(SP_NT)**2))
+
              !-------------------------------------------------------
              !flag=3, pseudo core charge density to repel fluid 
              ! from core
@@ -2540,7 +2547,12 @@ SUBROUTINE Fcorrection(GRIDC,P,T_INFO,LATT_CUR,Vcorr,Vdiel, EIFOR_SOL)
 
         G=SQRT(GX**2+GY**2+GZ**2)*TPI
 
-        GWORK (N) = -(P(NT)%ZVALF)*EXP(-0.5_q*(G**2)*(sigma_nc_k**2))
+        !GWORK (N) = -(P(NT)%ZVALF)*EXP(-0.5_q*(G**2)*(sigma_nc_k**2))
+
+        !Using species specific gaussian
+
+        GWORK (N) = -(P(NT)%ZVALF)*EXP(-0.5_q*(G**2)*(sigma_ionic(NT)**2))
+
         PCWORK (N) = (CORE_C(NT))*EXP(-0.5_q*(G**2)*(sigma_rc_k(NT)**2))
 
      ENDDO
