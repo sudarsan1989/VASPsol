@@ -85,7 +85,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  REAL(q)  :: Atot, Ael, Acav, Ecorr1, Ecorr2, Ecorr_cav
  REAL(q) :: sigma_nc_k1,sigma_k1,nc_k1,eb_k1,kappa2b_k1
  REAL(q) :: tau1,ediffs
- REAL(q), INTENT(IN) :: sigma_rc_k1(SP_T_INFO%NTYP), sigma_ionic(SP_T_INFO%NTYP), CORE_C1(SP_T_INFO%NTYP)
+ REAL(q), INTENT(IN) :: sigma_rc_k1(SP_T_INFO%NTYP), sigma_ionic_1(SP_T_INFO%NTYP), CORE_C1(SP_T_INFO%NTYP)
  !vacuum level
  RGRID,ALLOCATABLE :: RWORK_PHI(:), RWORK_CHG(:)
  COMPLEX(q),ALLOCATABLE :: CWORK_K(:)
