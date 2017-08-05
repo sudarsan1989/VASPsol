@@ -41,7 +41,7 @@ MODULE POT_LPCM_K
  REAL(q), PRIVATE, SAVE :: ZLIMS(2)
  REAL(q), PRIVATE, SAVE :: CHGMIN = 1E-10_q
  COMPLEX(q), PRIVATE, ALLOCATABLE, SAVE :: Sol_phi(:)
- REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:)
+ REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), sigma_ionic(:), CORE_C(:)
  REAL(q), PRIVATE, SAVE :: sigma_nc_k, sigma_k, nc_k, eb_k
  REAL(q), PRIVATE, SAVE :: kappa2b_k, tau, EDIFFSOL
  LOGICAL, PRIVATE, SAVE :: LRHOB = .FALSE., LRHOION = .FALSE.
