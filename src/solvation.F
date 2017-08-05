@@ -2044,6 +2044,14 @@ MODULE POT_K
          sol_io 'Error reading ''SIGMA_IONIC''from INCAR.'
          sol_io  ' Error code = ', IERR
          STOP
+
+
+      ELSE
+
+      DO I=1,T_INFO%NTYP
+            sigma_ionic(I) = sigma_ionic0(I)
+         ENDDO
+
       ENDIF
 
       !---------------------------------------------------------------
