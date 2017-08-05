@@ -1928,7 +1928,7 @@ MODULE POT_K
     !---------------------------------------------------------------
     sigma_nc_k = 1.6_q * delta_grd !sigma for point charges
 
-    sigma_ionic = sigma_nc_k
+
 
     CALL GETRCORE(T_INFO%NTYP,RCS)
 
@@ -1991,6 +1991,8 @@ MODULE POT_K
          sol_io ' Error code = ', IERR
          STOP
       ENDIF
+
+    sigma_ionic = sigma_nc_k
 
       !---------------------------------------------------------------
       !sigma_rc_k
