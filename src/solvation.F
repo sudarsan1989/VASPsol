@@ -62,7 +62,7 @@ MODULE POT_LPCM_K
 SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
      & SP_T_INFO,SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, &
      & sigma_nc_k1, sigma_k1,nc_k1, eb_k1, kappa2b_k1, CORE_C1, &
-     & sigma_rc_k1, tau1, ediffs, LRHOB1, LRHOION1, zlims_1, RHOB)
+     & sigma_rc_k1, sigma_ionic_1 tau1, ediffs, LRHOB1, LRHOION1, zlims_1, RHOB)
 
  IMPLICIT NONE
 
@@ -85,7 +85,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  REAL(q)  :: Atot, Ael, Acav, Ecorr1, Ecorr2, Ecorr_cav
  REAL(q) :: sigma_nc_k1,sigma_k1,nc_k1,eb_k1,kappa2b_k1
  REAL(q) :: tau1,ediffs
- REAL(q), INTENT(IN) :: sigma_rc_k1(SP_T_INFO%NTYP), CORE_C1(SP_T_INFO%NTYP)
+ REAL(q), INTENT(IN) :: sigma_rc_k1(SP_T_INFO%NTYP), sigma_ionic(SP_T_INFO%NTYP), CORE_C1(SP_T_INFO%NTYP)
  !vacuum level
  RGRID,ALLOCATABLE :: RWORK_PHI(:), RWORK_CHG(:)
  COMPLEX(q),ALLOCATABLE :: CWORK_K(:)
@@ -121,6 +121,7 @@ SUBROUTINE Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, &
  kappa2b_k =  kappa2b_k1
  CORE_C =  CORE_C1
  sigma_rc_k =  sigma_rc_k1
+ sigma_ionic =  sigma_ionic_1
  tau = tau1
  EDIFFSOL = ediffs
  LRHOB =  LRHOB1
@@ -1830,7 +1831,7 @@ MODULE POT_K
 
  ! numerical params
  REAL(q), PRIVATE, SAVE :: sigma_nc_k
- REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:)
+ REAL(q), ALLOCATABLE, PRIVATE, SAVE :: sigma_rc_k(:), CORE_C(:), sigma_ionic(:)
  ! empirical params
  REAL(q), PRIVATE, SAVE :: sigma_k, nc_k, eb_k
  REAL(q), PRIVATE, SAVE :: lambda_d_k, kappa2b_k, tau, EDIFFSOL
@@ -1875,7 +1876,7 @@ MODULE POT_K
    REAL(q) :: lambda_d_k_1, kappa2b_k_1
    INTEGER :: IDUM, N, IERR, K, I, II, ATOMIC_NUM
    REAL(q) :: zlims_1(2)
-   REAL(q) :: RDUM,delta_grd,sigma_rc_k0(T_INFO%NTYP)
+   REAL(q) :: RDUM,delta_grd, sigma_rc_k0(T_INFO%NTYP), sigma_ionic0(T_INFO%NTYP)
    COMPLEX(q) CDUM
    LOGICAL :: LRHOB_1, LRHOION_1
    LOGICAL :: LOPEN,LDUM,LIONODE_FLAG,LFLUEX
@@ -1908,6 +1909,7 @@ MODULE POT_K
 
  IF (PK_COUNTER == 1) THEN
     ALLOCATE(sigma_rc_k(T_INFO%NTYP))
+    ALLOCATE(sigma_ionic(T_INFO%NTYP))
     ALLOCATE(CORE_C(T_INFO%NTYP))
 #ifdef debugsol
     sol_io 'Setting up the paramters.'
@@ -1925,6 +1927,8 @@ MODULE POT_K
     !and CORE_C
     !---------------------------------------------------------------
     sigma_nc_k = 1.6_q * delta_grd !sigma for point charges
+
+    sigma_ionic = sigma_nc_k
 
     CALL GETRCORE(T_INFO%NTYP,RCS)
 
@@ -2010,6 +2014,32 @@ MODULE POT_K
 
       IF ((IERR/=0).AND.(IERR/=3)) THEN
          sol_io 'Error reading ''SIGMA_RC_K''from INCAR.'
+         sol_io  ' Error code = ', IERR
+         STOP
+      ENDIF
+
+      !---------------------------------------------------------------
+      !sigma_ionic
+      !---------------------------------------------------------------
+      CALL RDATAB(LOPEN,'INCAR',SP_IO%IU5,'SIGMA_IONIC','=','#',';','F',IDUM,sigma_ionic0,CDUM,LDUM,CHARAC,N,T_INFO%NTYP,IERR)
+#ifdef debugsol
+      IF (IERR == 3 ) THEN
+
+         sol_io '''SIGMA_IONIC'',the species dependent of ionic gaussians, not specified, using the default by 'SIGMA_NC_K''
+         sol_io 'sigma_ionic = ',sigma_ionic
+
+      ELSE IF (IERR == 0 ) THEN
+
+         sol_io 'Found : sigma_ionic(width of pseudo-core gaussians) = ',sigma_ionic0
+         DO I=1,T_INFO%NTYP
+            sigma_ionic(I) = sigma_ionic0(I)
+         ENDDO
+
+      ENDIF
+#endif
+
+      IF ((IERR/=0).AND.(IERR/=3)) THEN
+         sol_io 'Error reading ''SIGMA_IONIC''from INCAR.'
          sol_io  ' Error code = ', IERR
          STOP
       ENDIF
@@ -2218,7 +2248,7 @@ MODULE POT_K
 !-------------------------------------------------------------
       CALL Vcorrection_lpcm(SP_GRIDC, SP_LATT_CUR, SP_P, SP_T_INFO,&
            & SP_CHTOT, TOTN, PS_TOTN, Vcorr, Vdiel, Atot, sigma_nc_k,&
-           & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k,&
+           & sigma_k, nc_k, eb_k, kappa2b_k, CORE_C, sigma_rc_k, sigma_ionic, &
            & tau, EDIFFSOL, LRHOB, LRHOION, ZLIMS, RHOB)
 
 #ifdef debugsol
@@ -2433,6 +2463,7 @@ SUBROUTINE IONIC_CHARGE (SP_GRIDC,SP_LATT_CUR,SP_P,SP_T_INFO,SP_N, &
     ENDDO ions
 
     print *, 'sigma_nc_k:', sigma_nc_k
+    print *, 'sigma_ionic:', sigma_ionic
     print *, 'sigma_rc_k:', sigma_rc_k
     print *, 'CORE_C:', CORE_C
     
